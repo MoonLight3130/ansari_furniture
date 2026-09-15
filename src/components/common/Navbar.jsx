@@ -42,18 +42,17 @@ const Navbar = ({ onOpenSearch }) => {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 transition-all duration-300 ${
-          isScrolled
+        className={`sticky top-0 z-40 transition-all duration-300 ${isScrolled
             ? 'bg-[#FAF7F2]/95 backdrop-blur-md shadow-sm border-b border-[#EAE2D9]/80 py-3.5'
             : 'bg-[#FAF7F2] border-b border-[#EAE2D9]/50 py-4.5'
-        }`}
+          }`}
       >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">
-          
+
           {/* Brand Logo - Exact layout from reference: Ansari with FURNITURE spaced underneath */}
           <Link to="/" className="flex flex-col items-start group">
             <span className="font-serif text-2xl lg:text-3xl font-semibold tracking-tight text-[#1F2520] group-hover:text-[#2A352C] transition-colors leading-none">
-              Ansari
+              Anzari
             </span>
             <span className="text-[9px] tracking-[0.32em] font-medium text-[#736B63] uppercase mt-0.5">
               F U R N I T U R E
@@ -68,11 +67,10 @@ const Navbar = ({ onOpenSearch }) => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`text-sm font-medium transition-colors relative py-1 ${
-                    isActive
+                  className={`text-sm font-medium transition-colors relative py-1 ${isActive
                       ? 'text-[#1F2520] font-semibold'
                       : 'text-[#5C564F] hover:text-[#1F2520]'
-                  }`}
+                    }`}
                 >
                   {link.name}
                   {isActive && (
@@ -88,7 +86,7 @@ const Navbar = ({ onOpenSearch }) => {
 
           {/* Right Action Icons & Visit Store Button */}
           <div className="flex items-center gap-3 lg:gap-4">
-            
+
             {/* Search Input / Pill Button */}
             <button
               onClick={onOpenSearch}

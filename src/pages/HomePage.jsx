@@ -53,8 +53,8 @@ const HomePage = () => {
       {/* 6. Editorial Craftsmanship & Dining Narrative */}
       <EditorialStorySection />
 
-      {/* 7. Client Testimonials */}
-      <TestimonialsSection />
+      {/* 7. Gallery of Collections */}
+      <TestimonialsSection onQuickView={(p) => setQuickViewProduct(p)} />
 
       {/* 8. Editorial Inspiration Journal */}
       <JournalSection />

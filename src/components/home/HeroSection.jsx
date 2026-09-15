@@ -64,13 +64,13 @@ const HeroSection = ({ onQuickViewProduct }) => {
   return (
     <section className="relative overflow-hidden bg-[#FAF7F2] border-b border-[#EAE2D9]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-10">
-        
+
         {/* Main 2-Column Hero Grid matching reference */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-          
+
           {/* Left Column: Editorial Headline & Copy (col-span-5) */}
           <div className="lg:col-span-5 flex flex-col justify-center z-10">
-            
+
             {/* Eyebrow */}
             <motion.span
               key={`eyebrow-${currentSlide}`}
@@ -159,7 +159,7 @@ const HeroSection = ({ onQuickViewProduct }) => {
 
           {/* Right Column: Hero Visual, Floating Tag, Carousel controls, Vertical quote (col-span-7) */}
           <div className="lg:col-span-7 relative flex items-center">
-            
+
             {/* Image Frame with rounded corners */}
             <div className="relative w-full aspect-[16/10] sm:aspect-[16/11] rounded-3xl overflow-hidden shadow-xl border border-[#EAE2D9] bg-white">
               <AnimatePresence mode="wait">
