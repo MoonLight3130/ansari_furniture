@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FAF7F2;
+    color: #1F2520;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-script {
+    font-family: 'Caveat', cursive;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D9CFC4;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B8A695;
+}
+
+/* Luxury Card & Glass Transitions */
+.luxury-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(229, 222, 214, 0.7);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-card:hover {
+  border-color: rgba(184, 166, 149, 0.8);
+  box-shadow: 0 16px 32px -8px rgba(31, 37, 32, 0.06);
+}
+
+.luxury-tag {
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}

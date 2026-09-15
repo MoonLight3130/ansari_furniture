@@ -1,0 +1,406 @@
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Check, ShieldCheck, Truck, CreditCard, Lock, ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import api from '../services/api';
+
+const CheckoutPage = () => {
+  const { cartItems, subtotal, shippingFee, discountAmount, total, clearCart } = useCart();
+  const { user } = useAuth();
+  const { addToast } = useToast();
+  const navigate = useNavigate();
+
+  const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+  const [confirmedOrder, setConfirmedOrder] = useState(null);
+
+  // Address Form State
+  const [formData, setFormData] = useState({
+    fullName: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    street: user?.addresses?.[0]?.street || '',
+    city: user?.addresses?.[0]?.city || '',
+    state: user?.addresses?.[0]?.state || 'Maharashtra',
+    pincode: user?.addresses?.[0]?.pincode || '',
+  });
+
+  const [paymentMethod, setPaymentMethod] = useState('UPI / QR');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAddressSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.fullName || !formData.phone || !formData.street || !formData.city || !formData.pincode) {
+      addToast('Please complete all required shipping fields', 'error');
+      return;
+    }
+    setStep(2);
+  };
+
+  const handlePlaceOrder = async () => {
+    setSubmitting(true);
+    try {
+      const orderPayload = {
+        customerDetails: {
+          fullName: formData.fullName,
+          email: formData.email || 'guest@ansarifurniture.com',
+          phone: formData.phone,
+        },
+        shippingAddress: {
+          street: formData.street,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode,
+        },
+        items: cartItems.map((item) => ({
+          product: item.productId,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+          color: item.color,
+        })),
+        deliveryMethod: 'Standard White Glove',
+        paymentMethod,
+        subtotal,
+        discount: discountAmount,
+        shippingFee,
+        total,
+      };
+
+      const res = await api.post('/orders', orderPayload);
+      setConfirmedOrder(res.data);
+      clearCart();
+      setStep(3);
+      addToast('Your bespoke order has been successfully placed!');
+    } catch (err) {
+      console.error('Order creation error:', err);
+      addToast(err.response?.data?.message || 'Failed to place order. Please try again.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (step === 3 && confirmedOrder) {
+    return (
+      <div className="min-h-screen bg-[#FAF7F2] py-16">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6">
+          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#EAE2D9] text-center shadow-lg space-y-6">
+            <div className="w-16 h-16 rounded-full bg-[#EAE2D9] text-[#2A352C] flex items-center justify-center mx-auto">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+
+            <div>
+              <span className="text-xs uppercase tracking-widest text-[#7B5E43] font-semibold block mb-1">
+                Order Confirmed
+              </span>
+              <h1 className="font-serif text-3xl font-bold text-[#1F2520]">
+                Thank You for Trusting Ansari Furniture
+              </h1>
+              <p className="text-xs text-[#5C564F] mt-2">
+                Your order <strong className="text-[#1F2520]">{confirmedOrder.orderNumber}</strong> is currently being prepared by our master craftspeople.
+              </p>
+            </div>
+
+            {/* Order Details Receipt Box */}
+            <div className="bg-[#FAF7F2] rounded-2xl p-6 text-left border border-[#EAE2D9] space-y-3 text-xs">
+              <div className="flex justify-between border-b border-[#EAE2D9] pb-2">
+                <span className="text-[#736B63]">Recipient:</span>
+                <span className="font-semibold text-[#1F2520]">{confirmedOrder.customerDetails.fullName}</span>
+              </div>
+              <div className="flex justify-between border-b border-[#EAE2D9] pb-2">
+                <span className="text-[#736B63]">Delivery Address:</span>
+                <span className="font-medium text-[#1F2520] text-right">
+                  {confirmedOrder.shippingAddress.street}, {confirmedOrder.shippingAddress.city}, {confirmedOrder.shippingAddress.state} - {confirmedOrder.shippingAddress.pincode}
+                </span>
+              </div>
+              <div className="flex justify-between border-b border-[#EAE2D9] pb-2">
+                <span className="text-[#736B63]">Payment Method:</span>
+                <span className="font-semibold text-[#1F2520]">{confirmedOrder.paymentMethod} (Verified)</span>
+              </div>
+              <div className="flex justify-between pt-1 text-sm font-bold text-[#1F2520]">
+                <span>Total Amount Paid:</span>
+                <span>₹{confirmedOrder.total.toLocaleString('en-IN')}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Link
+                to="/account"
+                className="px-6 py-3 rounded-full bg-[#1F2520] text-[#FAF7F2] text-xs font-medium hover:bg-[#2A352C] transition-all"
+              >
+                View in My Orders
+              </Link>
+              <Link
+                to="/shop"
+                className="px-6 py-3 rounded-full border border-[#DED6CC] text-[#1F2520] text-xs font-medium hover:bg-white transition-all"
+              >
+                Continue Browsing
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+        
+        {/* Checkout Steps Tracker */}
+        <div className="max-w-xl mx-auto mb-10">
+          <div className="flex items-center justify-between relative">
+            <div className="flex items-center gap-2">
+              <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 1 ? 'bg-[#1F2520] text-white' : 'bg-[#EAE2D9] text-[#736B63]'
+              }`}>
+                1
+              </span>
+              <span className="text-xs font-medium text-[#1F2520]">Shipping</span>
+            </div>
+            <div className="h-[1px] flex-1 bg-[#DED6CC] mx-4" />
+            <div className="flex items-center gap-2">
+              <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                step >= 2 ? 'bg-[#1F2520] text-white' : 'bg-[#EAE2D9] text-[#736B63]'
+              }`}>
+                2
+              </span>
+              <span className="text-xs font-medium text-[#1F2520]">Payment</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          {/* Main Form (col-span-7) */}
+          <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-10 border border-[#EAE2D9]">
+            
+            {step === 1 ? (
+              <form onSubmit={handleAddressSubmit} className="space-y-6">
+                <div>
+                  <h2 className="font-serif text-2xl font-semibold text-[#1F2520]">
+                    Shipping &amp; Delivery Address
+                  </h2>
+                  <p className="text-xs text-[#736B63] mt-1">
+                    Please provide the destination for our white glove delivery team.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-medium text-[#2D2A26] block mb-1.5">Full Name *</label>
+                    <input
+                      type="text"
+                      name="fullName"
+                      required
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      placeholder="e.g. Aanya Sharma"
+                      className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-medium text-[#2D2A26] block mb-1.5">Phone Number *</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="+91 98765 43210"
+                      className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-medium text-[#2D2A26] block mb-1.5">Street / Apartment / Villa *</label>
+                  <input
+                    type="text"
+                    name="street"
+                    required
+                    value={formData.street}
+                    onChange={handleChange}
+                    placeholder="e.g. 14 Lotus Enclave, 4th Cross"
+                    className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-xs font-medium text-[#2D2A26] block mb-1.5">City *</label>
+                    <input
+                      type="text"
+                      name="city"
+                      required
+                      value={formData.city}
+                      onChange={handleChange}
+                      placeholder="e.g. Bengaluru"
+                      className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-medium text-[#2D2A26] block mb-1.5">State *</label>
+                    <input
+                      type="text"
+                      name="state"
+                      required
+                      value={formData.state}
+                      onChange={handleChange}
+                      placeholder="e.g. Karnataka"
+                      className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-medium text-[#2D2A26] block mb-1.5">Pincode *</label>
+                    <input
+                      type="text"
+                      name="pincode"
+                      required
+                      value={formData.pincode}
+                      onChange={handleChange}
+                      placeholder="e.g. 560038"
+                      className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-4 rounded-full bg-[#1F2520] text-[#FAF7F2] hover:bg-[#2A352C] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-md"
+                >
+                  <span>Continue to Payment</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-[#EAE2D9]">
+                  <div>
+                    <h2 className="font-serif text-2xl font-semibold text-[#1F2520]">
+                      Select Payment Method
+                    </h2>
+                    <p className="text-xs text-[#736B63] mt-0.5">
+                      Deliver to: {formData.street}, {formData.city}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setStep(1)}
+                    className="text-xs text-[#7B5E43] font-medium hover:underline"
+                  >
+                    Edit Address
+                  </button>
+                </div>
+
+                {/* Payment Selection Options */}
+                <div className="space-y-3">
+                  {[
+                    { id: 'UPI / QR', label: 'Instant UPI (GPay, PhonePe, Paytm, QR Code)', icon: CreditCard },
+                    { id: 'Credit / Debit Card', label: 'Credit or Debit Card (Visa, Mastercard, RuPay, Amex)', icon: Lock },
+                    { id: 'Net Banking', label: 'Net Banking (All Major Indian Banks)', icon: ShieldCheck },
+                    { id: 'Cash on Delivery', label: 'Pay on White Glove Delivery (COD)', icon: Truck },
+                  ].map((method) => (
+                    <label
+                      key={method.id}
+                      onClick={() => setPaymentMethod(method.id)}
+                      className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                        paymentMethod === method.id
+                          ? 'border-[#1F2520] bg-[#FAF7F2]'
+                          : 'border-[#EAE2D9] hover:border-[#D5C9BD]'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        checked={paymentMethod === method.id}
+                        onChange={() => setPaymentMethod(method.id)}
+                        className="accent-[#1F2520]"
+                      />
+                      <method.icon className="w-4 h-4 text-[#736B63]" />
+                      <span className="text-xs font-medium text-[#1F2520]">{method.label}</span>
+                    </label>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={handlePlaceOrder}
+                  className="w-full py-4 rounded-full bg-[#1F2520] text-[#FAF7F2] hover:bg-[#2A352C] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
+                >
+                  <span>{submitting ? 'Securing Order...' : `Pay & Place Order · ₹${total.toLocaleString('en-IN')}`}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+          </div>
+
+          {/* Cart Review Sidebar (col-span-5) */}
+          <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE2D9] space-y-5">
+            <h3 className="font-serif text-lg font-semibold text-[#1F2520]">
+              Order Summary ({cartItems.length} pieces)
+            </h3>
+
+            <div className="divide-y divide-[#F4EFEB] max-h-72 overflow-y-auto pr-1">
+              {cartItems.map((item) => (
+                <div key={`${item.productId}-${item.color}`} className="py-3 flex items-center gap-3">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-14 h-14 rounded-xl object-cover bg-[#FAF7F2]"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-serif text-xs font-semibold text-[#1F2520] truncate">
+                      {item.name}
+                    </h4>
+                    <span className="text-[11px] text-[#736B63] block">
+                      Qty: {item.quantity} · {item.color}
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-[#1F2520]">
+                    ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-[#EAE2D9] space-y-2 text-xs text-[#5C564F]">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span className="text-[#1F2520] font-medium">₹{subtotal.toLocaleString('en-IN')}</span>
+              </div>
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-green-700">
+                  <span>Discount</span>
+                  <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span>White Glove Delivery</span>
+                <span>{shippingFee === 0 ? 'Complimentary Free' : `₹${shippingFee.toLocaleString('en-IN')}`}</span>
+              </div>
+              <div className="flex justify-between pt-3 border-t border-[#EAE2D9] text-base font-bold text-[#1F2520]">
+                <span>Total Due</span>
+                <span>₹{total.toLocaleString('en-IN')}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default CheckoutPage;
