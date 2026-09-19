@@ -6,6 +6,7 @@ import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import CartDrawer from './components/cart/CartDrawer';
 import SearchModal from './components/common/SearchModal';
+import WhatsAppFloatingButton from './components/common/WhatsAppFloatingButton';
 
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
@@ -18,7 +19,6 @@ import CollectionsPage from './pages/CollectionsPage';
 import RoomsPage from './pages/RoomsPage';
 import AboutPage from './pages/AboutPage';
 import InspirationPage from './pages/InspirationPage';
-import AdminDashboardPage from './pages/AdminDashboardPage';
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -43,16 +43,11 @@ const AppContent = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
 
-  // Hide navbar/footer on admin pages for cleaner admin experience
-  const isAdminRoute = location.pathname.startsWith('/admin');
-
   return (
     <>
       <ScrollToTop />
 
-      {!isAdminRoute && (
-        <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
-      )}
+      <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
 
       <CartDrawer />
 
@@ -60,6 +55,8 @@ const AppContent = () => {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
       />
+
+      <WhatsAppFloatingButton />
 
       <main className="min-h-screen">
         <AnimatePresence mode="wait">
@@ -77,7 +74,6 @@ const AppContent = () => {
             <Route path="/rooms" element={<PageTransition><RoomsPage /></PageTransition>} />
             <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
             <Route path="/inspiration" element={<PageTransition><InspirationPage /></PageTransition>} />
-            <Route path="/admin" element={<PageTransition><AdminDashboardPage /></PageTransition>} />
             {/* Fallback route */}
             <Route path="*" element={
               <PageTransition>
@@ -94,7 +90,7 @@ const AppContent = () => {
         </AnimatePresence>
       </main>
 
-      {!isAdminRoute && <Footer />}
+      <Footer />
     </>
   );
 };

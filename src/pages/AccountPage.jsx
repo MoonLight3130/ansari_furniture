@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 import api from '../services/api';
 
 const AccountPage = () => {
-  const { user, logout, isAdmin, updateProfile } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const { wishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
   const navigate = useNavigate();
@@ -78,14 +78,6 @@ const AccountPage = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="px-4 py-2 rounded-full bg-[#2A352C] text-white text-xs font-medium hover:bg-[#1F2520] transition-colors"
-              >
-                Go to Admin Dashboard
-              </Link>
-            )}
             <button
               onClick={() => {
                 logout();

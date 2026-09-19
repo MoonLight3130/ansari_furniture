@@ -12,13 +12,20 @@ const Footer = () => {
 
           {/* Logo & Subtitle */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <Link to="/" className="flex flex-col group">
-              <span className="font-serif text-3xl font-semibold tracking-tight text-[#1F2520]">
-                Anzari
-              </span>
-              <span className="text-[10px] tracking-[0.35em] font-medium text-[#736B63] uppercase mt-0.5">
-                F U R N I T U R E
-              </span>
+            <Link to="/" className="flex items-center gap-3 group">
+              <img
+                src="/images/brand/logo.png"
+                alt="Anzari Furniture Logo"
+                className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="flex flex-col items-start">
+                <span className="font-serif text-2xl lg:text-3xl font-semibold tracking-tight text-[#1F2520]">
+                  Anzari
+                </span>
+                <span className="text-[10px] tracking-[0.35em] font-medium text-[#736B63] uppercase mt-0.5">
+                  F U R N I T U R E
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -91,7 +98,6 @@ const Footer = () => {
             <span>© {new Date().getFullYear()} Ansari Furniture. All rights reserved.</span>
             <Link to="/privacy" className="hover:text-[#1F2520] transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-[#1F2520] transition-colors">Terms of Service</Link>
-            <Link to="/admin" className="hover:text-[#1F2520] transition-colors">Admin Portal</Link>
           </div>
         </div>
 

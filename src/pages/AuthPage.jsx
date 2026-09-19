@@ -20,11 +20,7 @@ const AuthPage = () => {
   // Redirect if already logged in
   React.useEffect(() => {
     if (user) {
-      if (user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/account');
-      }
+      navigate('/account');
     }
   }, [user, navigate]);
 
@@ -50,24 +46,14 @@ const AuthPage = () => {
     setLoading(false);
   };
 
-  const fillDemo = (role) => {
-    if (role === 'admin') {
-      setFormData({
-        name: 'Ansari Administrator',
-        email: 'admin@ansarifurniture.com',
-        password: 'admin123',
-        phone: '+91 98765 43210',
-      });
-      setIsLogin(true);
-    } else {
-      setFormData({
-        name: 'Aanya Sharma',
-        email: 'aanya@example.com',
-        password: 'customer123',
-        phone: '+91 98123 45678',
-      });
-      setIsLogin(true);
-    }
+  const fillDemo = () => {
+    setFormData({
+      name: 'Aanya Sharma',
+      email: 'aanya@example.com',
+      password: 'customer123',
+      phone: '+91 98123 45678',
+    });
+    setIsLogin(true);
   };
 
   return (
@@ -198,17 +184,10 @@ const AuthPage = () => {
           <div className="flex gap-2 justify-center">
             <button
               type="button"
-              onClick={() => fillDemo('admin')}
-              className="px-3 py-1.5 rounded-lg border border-[#DED6CC] bg-[#FAF7F2] hover:bg-white text-[11px] font-semibold text-[#1F2520] transition-colors"
+              onClick={fillDemo}
+              className="px-4 py-2 rounded-full border border-[#DED6CC] bg-[#FAF7F2] hover:bg-white text-xs font-semibold text-[#1F2520] transition-colors"
             >
-              Admin (admin@ansarifurniture.com)
-            </button>
-            <button
-              type="button"
-              onClick={() => fillDemo('customer')}
-              className="px-3 py-1.5 rounded-lg border border-[#DED6CC] bg-[#FAF7F2] hover:bg-white text-[11px] font-semibold text-[#1F2520] transition-colors"
-            >
-              Customer (aanya@example.com)
+              Demo Customer (aanya@example.com)
             </button>
           </div>
         </div>

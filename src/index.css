@@ -4,13 +4,17 @@
 
 @layer base {
   body {
-    background-color: #FAF7F2;
-    color: #1F2520;
+    background-color: #F5F0E8;
+    color: #241A14;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, h4, .font-serif {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  }
+
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   }
 
   .font-script {
@@ -25,32 +29,33 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF7F2;
+  background: #F5F0E8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D9CFC4;
+  background: #DFD5C6;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8A695;
+  background: #A66A3A;
 }
 
-/* Luxury Card & Glass Transitions */
+/* Luxury Showroom Card & Glass Transitions */
 .luxury-card {
   background: #FFFFFF;
-  border: 1px solid rgba(229, 222, 214, 0.7);
+  border: 1px solid #DFD5C6;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .luxury-card:hover {
-  border-color: rgba(184, 166, 149, 0.8);
-  box-shadow: 0 16px 32px -8px rgba(31, 37, 32, 0.06);
+  border-color: #A66A3A;
+  box-shadow: 0 16px 32px -8px rgba(36, 26, 20, 0.08);
 }
 
 .luxury-tag {
   backdrop-filter: blur(12px);
-  background-color: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+  background-color: rgba(248, 244, 236, 0.92);
+  border: 1px solid rgba(223, 213, 198, 0.8);
+  box-shadow: 0 10px 25px -5px rgba(36, 26, 20, 0.08);
 }

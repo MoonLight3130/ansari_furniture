@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, Heart, ShoppingBag, Truck, ShieldCheck, ArrowRight, Check, Sparkles, RefreshCw } from 'lucide-react';
+import { Star, Heart, ShoppingBag, Truck, ShieldCheck, ArrowRight, Check, Sparkles, RefreshCw, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import ProductCard from '../components/common/ProductCard';
+import WhatsAppEnquiryModal from '../components/common/WhatsAppEnquiryModal';
 import api from '../services/api';
 
 const ProductDetailPage = () => {
@@ -17,6 +18,7 @@ const ProductDetailPage = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isWhatsAppOpen, setIsWhatsAppOpen] = useState(false);
 
   // Review form state
   const [reviewRating, setReviewRating] = useState(5);
@@ -286,12 +288,15 @@ const ProductDetailPage = () => {
                 </div>
 
                 <button
-                  onClick={handleBuyNow}
-                  className="w-full py-3.5 rounded-full bg-[#7B5E43] text-white hover:bg-[#624a35] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-sm"
+                  onClick={() => setIsWhatsAppOpen(true)}
+                  className="w-full py-3.5 sm:py-4 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white transition-all text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 shadow-md hover:shadow-xl cursor-pointer"
                 >
-                  <span>Buy Now with Instant Checkout</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
+                  <span>Enquire on WhatsApp</span>
                 </button>
+                <p className="text-[11px] text-[#70482D] text-center pt-1 font-light">
+                  ✨ Instant showroom quote, custom dimensions &amp; wood finish options
+                </p>
               </div>
 
               {/* Trust Badges */}
@@ -452,7 +457,39 @@ const ProductDetailPage = () => {
           </div>
         )}
 
+        {/* Sticky Mobile WhatsApp Action Bar for Mobile Resolution */}
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 px-4 py-3 bg-[#F5F0E8]/95 backdrop-blur-md border-t border-[#DFD5C6] z-30 flex items-center gap-3 shadow-2xl">
+          <div className="flex flex-col min-w-0 pr-1">
+            <span className="text-[9px] uppercase tracking-wider text-[#70482D] font-bold">Showroom</span>
+            <span className="font-serif text-base font-bold text-[#241A14]">
+              ₹{product.price?.toLocaleString('en-IN')}
+            </span>
+          </div>
+          <button
+            onClick={() => addToCart(product, quantity, selectedColor)}
+            className="p-3 rounded-full border border-[#3A261B] text-[#3A261B] bg-white active:bg-[#EAE0D2] shadow-xs shrink-0"
+            title="Add to Enquiry List"
+            aria-label="Add to Enquiry List"
+          >
+            <ShoppingBag className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setIsWhatsAppOpen(true)}
+            className="flex-1 py-3 px-3 rounded-full bg-[#25D366] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg active:scale-95 transition-transform"
+          >
+            <MessageCircle className="w-4 h-4 fill-white" />
+            <span>Enquire on WhatsApp</span>
+          </button>
+        </div>
+
       </div>
+
+      {/* WhatsApp Enquiry Modal */}
+      <WhatsAppEnquiryModal
+        isOpen={isWhatsAppOpen}
+        onClose={() => setIsWhatsAppOpen(false)}
+        product={product}
+      />
     </div>
   );
 };

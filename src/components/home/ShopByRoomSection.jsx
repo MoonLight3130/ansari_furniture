@@ -7,31 +7,31 @@ const rooms = [
   {
     name: 'Living Room',
     slug: 'Living Room',
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80',
+    image: '/images/rooms/living-room.jpg',
     itemCount: '18 Pieces',
   },
   {
     name: 'Bedroom',
     slug: 'Bedroom',
-    image: 'https://images.unsplash.com/photo-1540518614846-7ede433c4550?w=600&q=80',
+    image: '/images/rooms/bedroom.jpg',
     itemCount: '14 Pieces',
   },
   {
     name: 'Dining Room',
     slug: 'Dining Room',
-    image: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=600&q=80',
+    image: '/images/rooms/dining-room.jpg',
     itemCount: '12 Pieces',
   },
   {
     name: 'Home Office',
     slug: 'Home Office',
-    image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600&q=80',
+    image: '/images/rooms/home-office.jpg',
     itemCount: '9 Pieces',
   },
   {
     name: 'Outdoor',
     slug: 'Outdoor',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&q=80',
+    image: '/images/rooms/outdoor.jpg',
     itemCount: '8 Pieces',
   },
 ];

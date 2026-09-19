@@ -1,5 +1,5 @@
 import React from 'react';
-import { Truck, CreditCard, ShieldCheck, Headphones, ArrowRight, Leaf } from 'lucide-react';
+import { Truck, MapPin, MessageCircle, Headphones, ArrowRight, Leaf } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const TrustBenefitsBar = () => {
@@ -10,14 +10,14 @@ const TrustBenefitsBar = () => {
       subtitle: 'Across India',
     },
     {
-      icon: CreditCard,
-      title: 'Easy EMI',
-      subtitle: 'Options',
+      icon: MapPin,
+      title: 'Visit Showroom',
+      subtitle: 'Experience In Person',
     },
     {
-      icon: ShieldCheck,
-      title: 'Secure Payments',
-      subtitle: '100% Safe & Secure',
+      icon: MessageCircle,
+      title: 'WhatsApp Enquiry',
+      subtitle: 'Instant Response',
     },
     {
       icon: Headphones,

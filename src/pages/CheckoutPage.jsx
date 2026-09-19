@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Check, ShieldCheck, Truck, CreditCard, Lock, ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Check, ShieldCheck, Truck, CreditCard, Lock, ArrowRight, CheckCircle2, ChevronRight, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -27,7 +27,7 @@ const CheckoutPage = () => {
     pincode: user?.addresses?.[0]?.pincode || '',
   });
 
-  const [paymentMethod, setPaymentMethod] = useState('UPI / QR');
+  const [paymentMethod, setPaymentMethod] = useState('Pay on Delivery (After Inspection)');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -75,9 +75,26 @@ const CheckoutPage = () => {
 
       const res = await api.post('/orders', orderPayload);
       setConfirmedOrder(res.data);
+
+      // Automatically launch WhatsApp with order summary for showroom confirmation
+      const showroomNumber = '919876543210';
+      let waText = `*Showroom Order Booking — Anzari Furniture*\n\n`;
+      waText += `*Order #:* ${res.data.orderNumber || 'Pending'}\n`;
+      waText += `*Customer:* ${formData.fullName} (${formData.phone})\n`;
+      waText += `*Delivery To:* ${formData.street}, ${formData.city} - ${formData.pincode}\n\n`;
+      waText += `*Pieces Ordered:*\n`;
+      cartItems.forEach((it, idx) => {
+        waText += `${idx + 1}. *${it.name}* (Qty: ${it.quantity}) — ₹${((it.price || 0) * it.quantity).toLocaleString('en-IN')}\n`;
+      });
+      waText += `\n*Estimated Total:* ₹${total.toLocaleString('en-IN')}\n`;
+      waText += `*Preference:* ${paymentMethod}\n\n`;
+      waText += `Please confirm stock availability, custom finish, and dispatch timeline.`;
+
+      window.open(`https://wa.me/${showroomNumber}?text=${encodeURIComponent(waText)}`, '_blank', 'noopener,noreferrer');
+
       clearCart();
       setStep(3);
-      addToast('Your bespoke order has been successfully placed!');
+      addToast('Your order enquiry has been sent to our showroom!');
     } catch (err) {
       console.error('Order creation error:', err);
       addToast(err.response?.data?.message || 'Failed to place order. Please try again.', 'error');
@@ -97,13 +114,13 @@ const CheckoutPage = () => {
 
             <div>
               <span className="text-xs uppercase tracking-widest text-[#7B5E43] font-semibold block mb-1">
-                Order Confirmed
+                Enquiry Booking Confirmed
               </span>
               <h1 className="font-serif text-3xl font-bold text-[#1F2520]">
-                Thank You for Trusting Ansari Furniture
+                Thank You for Choosing Anzari Furniture
               </h1>
               <p className="text-xs text-[#5C564F] mt-2">
-                Your order <strong className="text-[#1F2520]">{confirmedOrder.orderNumber}</strong> is currently being prepared by our master craftspeople.
+                Your order enquiry <strong className="text-[#1F2520]">{confirmedOrder.orderNumber}</strong> has been received by our showroom craftspeople.
               </p>
             </div>
 
@@ -120,16 +137,25 @@ const CheckoutPage = () => {
                 </span>
               </div>
               <div className="flex justify-between border-b border-[#EAE2D9] pb-2">
-                <span className="text-[#736B63]">Payment Method:</span>
-                <span className="font-semibold text-[#1F2520]">{confirmedOrder.paymentMethod} (Verified)</span>
+                <span className="text-[#736B63]">Payment Preference:</span>
+                <span className="font-semibold text-[#1F2520]">{confirmedOrder.paymentMethod}</span>
               </div>
               <div className="flex justify-between pt-1 text-sm font-bold text-[#1F2520]">
-                <span>Total Amount Paid:</span>
+                <span>Estimated Total:</span>
                 <span>₹{confirmedOrder.total.toLocaleString('en-IN')}</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+              <a
+                href={`https://wa.me/919876543210?text=${encodeURIComponent(`Hello Anzari Furniture, I placed order enquiry #${confirmedOrder.orderNumber} for ₹${confirmedOrder.total?.toLocaleString('en-IN')}. Please confirm dispatch details.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+              >
+                <MessageCircle className="w-4 h-4 fill-white" />
+                <span>Chat on WhatsApp</span>
+              </a>
               <Link
                 to="/account"
                 className="px-6 py-3 rounded-full bg-[#1F2520] text-[#FAF7F2] text-xs font-medium hover:bg-[#2A352C] transition-all"
@@ -278,7 +304,7 @@ const CheckoutPage = () => {
                   type="submit"
                   className="w-full py-4 rounded-full bg-[#1F2520] text-[#FAF7F2] hover:bg-[#2A352C] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-md"
                 >
-                  <span>Continue to Payment</span>
+                  <span>Continue to Confirmation</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
@@ -287,7 +313,7 @@ const CheckoutPage = () => {
                 <div className="flex items-center justify-between pb-4 border-b border-[#EAE2D9]">
                   <div>
                     <h2 className="font-serif text-2xl font-semibold text-[#1F2520]">
-                      Select Payment Method
+                      Showroom Confirmation &amp; Payment Preference
                     </h2>
                     <p className="text-xs text-[#736B63] mt-0.5">
                       Deliver to: {formData.street}, {formData.city}
@@ -301,20 +327,19 @@ const CheckoutPage = () => {
                   </button>
                 </div>
 
-                {/* Payment Selection Options */}
+                {/* Showroom Payment Selection Options */}
                 <div className="space-y-3">
                   {[
-                    { id: 'UPI / QR', label: 'Instant UPI (GPay, PhonePe, Paytm, QR Code)', icon: CreditCard },
-                    { id: 'Credit / Debit Card', label: 'Credit or Debit Card (Visa, Mastercard, RuPay, Amex)', icon: Lock },
-                    { id: 'Net Banking', label: 'Net Banking (All Major Indian Banks)', icon: ShieldCheck },
-                    { id: 'Cash on Delivery', label: 'Pay on White Glove Delivery (COD)', icon: Truck },
+                    { id: 'Pay on White Glove Delivery (COD)', label: 'Pay on Delivery (Inspect piece first in your home)', icon: Truck },
+                    { id: 'Showroom Visit & In-Person Inspection', label: 'Showroom Visit & Payment (Inspect in Bandra showroom)', icon: ShieldCheck },
+                    { id: 'UPI / Bank Transfer upon Dispatch', label: 'UPI / Bank Transfer (Pay after showroom stock verification)', icon: Lock },
                   ].map((method) => (
                     <label
                       key={method.id}
                       onClick={() => setPaymentMethod(method.id)}
                       className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer ${
                         paymentMethod === method.id
-                          ? 'border-[#1F2520] bg-[#FAF7F2]'
+                          ? 'border-[#25D366] bg-[#25D366]/5'
                           : 'border-[#EAE2D9] hover:border-[#D5C9BD]'
                       }`}
                     >
@@ -323,7 +348,7 @@ const CheckoutPage = () => {
                         name="payment"
                         checked={paymentMethod === method.id}
                         onChange={() => setPaymentMethod(method.id)}
-                        className="accent-[#1F2520]"
+                        className="accent-[#25D366]"
                       />
                       <method.icon className="w-4 h-4 text-[#736B63]" />
                       <span className="text-xs font-medium text-[#1F2520]">{method.label}</span>
@@ -331,14 +356,24 @@ const CheckoutPage = () => {
                   ))}
                 </div>
 
+                <div className="p-4 bg-[#F8F4EC] rounded-2xl border border-[#DFD5C6] text-xs text-[#70482D] space-y-1">
+                  <p className="font-semibold flex items-center gap-1.5 text-[#241A14]">
+                    <ShieldCheck className="w-4 h-4 text-[#25D366]" />
+                    No Upfront Online Payment Required
+                  </p>
+                  <p className="text-[11px] text-[#8C8379] leading-relaxed">
+                    Clicking below will securely send your order specification to our WhatsApp showroom team. We will review timber availability and schedule your delivery with you directly.
+                  </p>
+                </div>
+
                 <button
                   type="button"
                   disabled={submitting}
                   onClick={handlePlaceOrder}
-                  className="w-full py-4 rounded-full bg-[#1F2520] text-[#FAF7F2] hover:bg-[#2A352C] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-lg disabled:opacity-60"
+                  className="w-full py-4 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white transition-all text-xs sm:text-sm font-bold tracking-wide flex items-center justify-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-60 cursor-pointer"
                 >
-                  <span>{submitting ? 'Securing Order...' : `Pay & Place Order · ₹${total.toLocaleString('en-IN')}`}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <span>{submitting ? 'Connecting to Showroom...' : `Confirm & Send Order via WhatsApp · ₹${total.toLocaleString('en-IN')}`}</span>
                 </button>
               </div>
             )}

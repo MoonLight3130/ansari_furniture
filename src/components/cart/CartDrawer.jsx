@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Tag, MessageCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 
@@ -27,6 +27,23 @@ const CartDrawer = () => {
     if (inputCode.trim()) {
       applyPromo(inputCode.trim());
     }
+  };
+
+  const handleWhatsAppCartEnquiry = () => {
+    const showroomNumber = '919876543210';
+    let text = `*Showroom Furniture Enquiry — Anzari Furniture*\n\n`;
+    text += `Hello, I would like to enquire about the availability, custom finish, and delivery of the following pieces:\n\n`;
+    cartItems.forEach((item, index) => {
+      text += `${index + 1}. *${item.name}*\n`;
+      text += `   Quantity: ${item.quantity}\n`;
+      if (item.selectedColor) text += `   Color/Finish: ${item.selectedColor}\n`;
+      text += `   Price: ₹${((item.price || 0) * item.quantity).toLocaleString('en-IN')}\n\n`;
+    });
+    text += `*Estimated Total:* ₹${total.toLocaleString('en-IN')}\n\n`;
+    text += `Please confirm showroom availability, dispatch schedule, and delivery options.`;
+
+    window.open(`https://wa.me/${showroomNumber}?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    setIsCartOpen(false);
   };
 
   const freeDeliveryThreshold = 20000;
@@ -239,14 +256,22 @@ const CartDrawer = () => {
                 </div>
 
                 <button
+                  onClick={handleWhatsAppCartEnquiry}
+                  className="w-full py-3.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white transition-all text-xs font-bold tracking-wide flex items-center justify-center gap-2 shadow-md hover:shadow-xl cursor-pointer"
+                >
+                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <span>Enquire List on WhatsApp</span>
+                </button>
+
+                <button
                   onClick={() => {
                     setIsCartOpen(false);
-                    navigate('/checkout');
+                    navigate('/cart');
                   }}
-                  className="w-full py-3.5 rounded-full bg-[#1F2520] text-[#FAF7F2] hover:bg-[#2A352C] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                  className="w-full py-2.5 rounded-full border border-[#DFD5C6] text-[#241A14] hover:bg-[#F5F0E8] transition-colors text-xs font-semibold flex items-center justify-center gap-1.5"
                 >
-                  <span>Proceed to Checkout</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>View Full Enquiry Bag</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}

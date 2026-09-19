@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, Tag } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, Tag, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const CartPage = () => {
@@ -18,6 +18,22 @@ const CartPage = () => {
 
   const [inputCode, setInputCode] = useState('');
   const navigate = useNavigate();
+
+  const handleWhatsAppCartEnquiry = () => {
+    const showroomNumber = '919876543210';
+    let text = `*Showroom Furniture Enquiry — Anzari Furniture*\n\n`;
+    text += `Hello, I would like to enquire about the availability, custom finish, and delivery of the following pieces:\n\n`;
+    cartItems.forEach((item, index) => {
+      text += `${index + 1}. *${item.name}*\n`;
+      text += `   Quantity: ${item.quantity}\n`;
+      if (item.selectedColor) text += `   Color/Finish: ${item.selectedColor}\n`;
+      text += `   Price: ₹${((item.price || 0) * item.quantity).toLocaleString('en-IN')}\n\n`;
+    });
+    text += `*Estimated Total:* ₹${total.toLocaleString('en-IN')}\n\n`;
+    text += `Please confirm showroom availability, dispatch schedule, and delivery options.`;
+
+    window.open(`https://wa.me/${showroomNumber}?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+  };
 
   const handleApply = (e) => {
     e.preventDefault();
@@ -164,18 +180,21 @@ const CartPage = () => {
               </div>
 
               <button
-                onClick={() => navigate('/checkout')}
-                className="w-full py-4 rounded-full bg-[#1F2520] text-[#FAF7F2] hover:bg-[#2A352C] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-lg"
+                onClick={handleWhatsAppCartEnquiry}
+                className="w-full py-4 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white transition-all text-sm font-bold tracking-wide flex items-center justify-center gap-2 shadow-lg hover:shadow-xl cursor-pointer"
               >
-                <span>Proceed to Checkout</span>
-                <ArrowRight className="w-4 h-4" />
+                <MessageCircle className="w-5 h-5 fill-white" />
+                <span>Send Enquiry via WhatsApp</span>
               </button>
 
-              <div className="text-[11px] text-[#736B63] space-y-1 pt-2">
+              <div className="text-xs text-[#70482D] space-y-1.5 pt-2">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#354238]" />
-                  <span>100% Encrypted &amp; Secure Checkout</span>
+                  <ShieldCheck className="w-4 h-4 text-[#25D366]" />
+                  <span className="font-semibold text-[#241A14]">Showroom Consultation on WhatsApp</span>
                 </div>
+                <p className="text-[11px] text-[#8C8379] leading-relaxed">
+                  No online payment needed now. Our craftsmen will confirm stock availability, custom dimensions, polish shade, and delivery schedule directly with you.
+                </p>
               </div>
             </div>
 
