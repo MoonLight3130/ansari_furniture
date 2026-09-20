@@ -13,11 +13,10 @@ import ShopPage from './pages/ShopPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
-import AuthPage from './pages/AuthPage';
-import AccountPage from './pages/AccountPage';
 import CollectionsPage from './pages/CollectionsPage';
 import RoomsPage from './pages/RoomsPage';
 import AboutPage from './pages/AboutPage';
+import WishlistPage from './pages/WishlistPage';
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -65,10 +64,7 @@ const AppContent = () => {
             <Route path="/product/:slug" element={<PageTransition><ProductDetailPage /></PageTransition>} />
             <Route path="/cart" element={<PageTransition><CartPage /></PageTransition>} />
             <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
-            <Route path="/login" element={<PageTransition><AuthPage /></PageTransition>} />
-            <Route path="/register" element={<PageTransition><AuthPage /></PageTransition>} />
-            <Route path="/account" element={<PageTransition><AccountPage /></PageTransition>} />
-            <Route path="/wishlist" element={<PageTransition><AccountPage /></PageTransition>} />
+            <Route path="/wishlist" element={<PageTransition><WishlistPage /></PageTransition>} />
             <Route path="/collections" element={<PageTransition><CollectionsPage /></PageTransition>} />
             <Route path="/rooms" element={<PageTransition><RoomsPage /></PageTransition>} />
             <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />

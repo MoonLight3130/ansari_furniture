@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, User, Heart, ShoppingBag, Menu, X, MessageCircle } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Search, Heart, ShoppingBag, Menu, X, MessageCircle } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ onOpenSearch }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const { totalItems, setIsCartOpen } = useCart();
   const { wishlistCount } = useWishlist();
-  const { user, logout } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +24,6 @@ const Navbar = ({ onOpenSearch }) => {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-    setUserMenuOpen(false);
   }, [location]);
 
   // Exact navigation specified in prompt: Home, Shop, Collections, Living Room, Dining, Bedroom, About Us
@@ -120,60 +115,6 @@ const Navbar = ({ onOpenSearch }) => {
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Account dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  if (!user) {
-                    navigate('/login');
-                  } else {
-                    setUserMenuOpen(!userMenuOpen);
-                  }
-                }}
-                className="p-2 text-[#241A14] hover:text-[#70482D] transition-colors relative"
-                aria-label="Account"
-              >
-                <User className="w-5 h-5" />
-                {user && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#A66A3A]" />
-                )}
-              </button>
-
-              {/* User Dropdown Menu */}
-              <AnimatePresence>
-                {userMenuOpen && user && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    className="absolute right-0 mt-2 w-52 bg-[#F8F4EC] rounded-2xl shadow-xl border border-[#DFD5C6] py-2 z-50 overflow-hidden"
-                  >
-                    <div className="px-4 py-2 border-b border-[#DFD5C6]/60">
-                      <p className="text-xs font-semibold text-[#241A14] truncate">{user.name}</p>
-                      <p className="text-[11px] text-[#70482D] truncate">{user.email}</p>
-                    </div>
-                    <Link
-                      to="/account"
-                      className="block px-4 py-2 text-xs text-[#241A14] hover:bg-[#EAE0D2] transition-colors"
-                    >
-                      My Profile &amp; Orders
-                    </Link>
-                    <Link
-                      to="/wishlist"
-                      className="block px-4 py-2 text-xs text-[#241A14] hover:bg-[#EAE0D2] transition-colors"
-                    >
-                      Wishlist ({wishlistCount})
-                    </Link>
-                    <button
-                      onClick={logout}
-                      className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors"
-                    >
-                      Sign Out
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
 
             {/* Wishlist Icon */}
             <Link

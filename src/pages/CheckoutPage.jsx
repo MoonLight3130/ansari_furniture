@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Check, ShieldCheck, Truck, CreditCard, Lock, ArrowRight, CheckCircle2, ChevronRight, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
+
 import { useToast } from '../context/ToastContext';
 import api from '../services/api';
 
 const CheckoutPage = () => {
   const { cartItems, subtotal, shippingFee, discountAmount, total, clearCart } = useCart();
-  const { user } = useAuth();
+
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -18,13 +18,13 @@ const CheckoutPage = () => {
 
   // Address Form State
   const [formData, setFormData] = useState({
-    fullName: user?.name || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    street: user?.addresses?.[0]?.street || '',
-    city: user?.addresses?.[0]?.city || '',
-    state: user?.addresses?.[0]?.state || 'Maharashtra',
-    pincode: user?.addresses?.[0]?.pincode || '',
+    fullName: '',
+    email: '',
+    phone: '',
+    street: '',
+    city: '',
+    state: 'Kerala',
+    pincode: '',
   });
 
   const [paymentMethod, setPaymentMethod] = useState('Pay on Delivery (After Inspection)');
@@ -157,10 +157,10 @@ const CheckoutPage = () => {
                 <span>Chat on WhatsApp</span>
               </a>
               <Link
-                to="/account"
+                to="/shop"
                 className="px-6 py-3 rounded-full bg-[#1F2520] text-[#FAF7F2] text-xs font-medium hover:bg-[#2A352C] transition-all"
               >
-                View in My Orders
+                Browse More Furniture
               </Link>
               <Link
                 to="/shop"

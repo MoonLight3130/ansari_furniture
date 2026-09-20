@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
-import api from '../services/api';
 
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
-  const { user } = useAuth();
   const { addToast } = useToast();
   const [wishlist, setWishlist] = useState(() => {
     try {
@@ -16,13 +13,6 @@ export const WishlistProvider = ({ children }) => {
       return [];
     }
   });
-
-  // Sync with user's wishlist when user logs in
-  useEffect(() => {
-    if (user && user.wishlist) {
-      setWishlist(user.wishlist);
-    }
-  }, [user]);
 
   useEffect(() => {
     try {
@@ -36,7 +26,7 @@ export const WishlistProvider = ({ children }) => {
     return wishlist.some((item) => (item._id || item) === productId);
   };
 
-  const toggleWishlist = async (product) => {
+  const toggleWishlist = (product) => {
     const pId = product._id || product;
     const exists = isInWishlist(pId);
 
@@ -46,14 +36,6 @@ export const WishlistProvider = ({ children }) => {
     } else {
       setWishlist((prev) => [...prev, product]);
       addToast(`Saved "${product.name || 'item'}" to your wishlist.`);
-    }
-
-    if (user) {
-      try {
-        await api.post('/auth/wishlist/toggle', { productId: pId });
-      } catch (err) {
-        console.error('Failed to sync wishlist with server:', err);
-      }
     }
   };
 

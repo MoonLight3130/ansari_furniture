@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Heart, ShoppingBag, Truck, ShieldCheck, ArrowRight, Check, Sparkles, RefreshCw, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
-import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import ProductCard from '../components/common/ProductCard';
 import WhatsAppEnquiryModal from '../components/common/WhatsAppEnquiryModal';
@@ -28,7 +27,7 @@ const ProductDetailPage = () => {
 
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
-  const { user } = useAuth();
+
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -82,7 +81,7 @@ const ProductDetailPage = () => {
         productId: product._id,
         rating: reviewRating,
         comment: reviewComment,
-        userName: reviewName || (user ? user.name : 'Customer'),
+        userName: reviewName || 'Customer',
       });
       setReviews((prev) => [res.data, ...prev]);
       setReviewComment('');
@@ -405,8 +404,7 @@ const ProductDetailPage = () => {
                   </div>
                 </div>
 
-                {!user && (
-                  <div>
+                <div>
                     <label className="text-xs font-medium text-[#2D2A26] block mb-1">Your Name</label>
                     <input
                       type="text"
@@ -416,7 +414,6 @@ const ProductDetailPage = () => {
                       className="w-full px-3 py-2 text-xs rounded-xl border border-[#DED6CC] focus:outline-none focus:border-[#1F2520]"
                     />
                   </div>
-                )}
 
                 <div>
                   <label className="text-xs font-medium text-[#2D2A26] block mb-1">Your Review</label>
