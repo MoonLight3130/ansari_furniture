@@ -18,7 +18,6 @@ import AccountPage from './pages/AccountPage';
 import CollectionsPage from './pages/CollectionsPage';
 import RoomsPage from './pages/RoomsPage';
 import AboutPage from './pages/AboutPage';
-import InspirationPage from './pages/InspirationPage';
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -73,7 +72,7 @@ const AppContent = () => {
             <Route path="/collections" element={<PageTransition><CollectionsPage /></PageTransition>} />
             <Route path="/rooms" element={<PageTransition><RoomsPage /></PageTransition>} />
             <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
-            <Route path="/inspiration" element={<PageTransition><InspirationPage /></PageTransition>} />
+            <Route path="/inspiration" element={<PageTransition><CollectionsPage /></PageTransition>} />
             {/* Fallback route */}
             <Route path="*" element={
               <PageTransition>

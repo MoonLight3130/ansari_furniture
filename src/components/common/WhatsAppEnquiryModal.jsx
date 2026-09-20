@@ -136,7 +136,7 @@ const WhatsAppEnquiryModal = ({ isOpen, onClose, product = null }) => {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Mumbai 400050"
+                    placeholder="e.g. Kollam / Thiruvananthapuram"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-[#DFD5C6] focus:outline-none focus:border-[#70482D]"

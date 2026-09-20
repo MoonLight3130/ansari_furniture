@@ -279,9 +279,9 @@ const Navbar = ({ onOpenSearch }) => {
                   <MessageCircle className="w-4 h-4 text-[#25D366] fill-[#25D366]" />
                   <span>Chat with Showroom</span>
                 </a>
-                <div className="text-center">
-                  <p className="text-[11px] text-[#70482D]">Showroom: Bandra West, Mumbai</p>
-                  <p className="text-[10px] text-[#70482D]/80">Mon - Sun: 10:30 AM - 8:00 PM</p>
+                <div className="text-center space-y-0.5">
+                  <p className="text-[11px] font-semibold text-[#70482D]">Showrooms: Kollam &amp; Thiruvananthapuram, Kerala</p>
+                  <p className="text-[10px] text-[#70482D]/80">Mon - Sun: 9:30 AM - 8:30 PM</p>
                 </div>
               </div>
             </motion.div>

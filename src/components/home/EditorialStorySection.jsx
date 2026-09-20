@@ -4,10 +4,10 @@ import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const EditorialStorySection = () => {
   const craftPoints = [
-    { title: 'Premium Sustainable Teak', desc: 'FSC-certified hardwoods seasoned to withstand tropical humidity.' },
-    { title: 'Master Joinery', desc: 'Time-honored mortise & tenon carpentry with zero visible screws.' },
-    { title: 'Organic Matte Finishes', desc: 'Non-toxic, food-safe hand-rubbed oils that enrich natural timber grain.' },
-    { title: 'Made for Generations', desc: 'Constructed to develop a rich, soulful patina as years pass.' },
+    { title: 'Seasoned Burma & Nilambur Teak', desc: '100% solid timber seasoned to withstand Kerala’s tropical humidity.' },
+    { title: 'Master Joinery & Mortise Tenons', desc: 'Time-honored Indian joinery and hand carving with zero visible screws.' },
+    { title: 'Natural Hand-Rubbed Finishes', desc: 'Non-toxic, food-grade oils & beeswax that enrich deep golden timber grain.' },
+    { title: 'Heirloom Furniture for Generations', desc: 'Constructed to develop a rich, soulful patina as decades pass.' },
   ];
 
   return (
@@ -16,29 +16,29 @@ const EditorialStorySection = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* Left: Dual Image Collage */}
+          {/* Left: Dual Image Collage featuring Anzari's authentic showroom furniture */}
           <div className="lg:col-span-7 grid grid-cols-12 gap-4 items-center">
-            <div className="col-span-8 rounded-3xl overflow-hidden shadow-lg border border-[#EAE2D9] aspect-[4/3] bg-white">
+            <div className="col-span-8 rounded-3xl overflow-hidden shadow-lg border border-[#EAE2D9] aspect-[4/3] bg-white group">
               <img
-                src="https://images.unsplash.com/photo-1617806118233-18e1de247200?w=900&q=80"
-                alt="Dining spaces that bring people together"
-                className="w-full h-full object-cover"
+                src="/images/showroom/teak_oval_dining.jpg"
+                alt="Anzari Royal Teak Oval Dining Suite"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 loading="lazy"
               />
             </div>
             <div className="col-span-4 flex flex-col gap-4">
-              <div className="rounded-2xl overflow-hidden shadow-md border border-[#EAE2D9] aspect-square bg-white">
+              <div className="rounded-2xl overflow-hidden shadow-md border border-[#EAE2D9] aspect-square bg-white group">
                 <img
-                  src="https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500&q=80"
-                  alt="Fine craftsmanship joint"
-                  className="w-full h-full object-cover"
+                  src="/images/showroom/craftsmanship_macro.jpg"
+                  alt="Anzari Hand-carved solid teak craftsmanship"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   loading="lazy"
                 />
               </div>
               <div className="p-4 bg-[#F3EDE4] rounded-2xl border border-[#EAE2D9] text-center">
                 <span className="font-serif text-2xl font-bold text-[#1F2520] block">100%</span>
                 <span className="text-[10px] uppercase tracking-wider text-[#736B63] font-semibold">
-                  Solid Hardwood
+                  Solid Teakwood
                 </span>
               </div>
             </div>
@@ -55,7 +55,7 @@ const EditorialStorySection = () => {
             </h2>
 
             <p className="text-xs sm:text-sm text-[#5C564F] leading-relaxed mb-6 font-light">
-              Because the best moments happen around the table. At Ansari Furniture, every angle, bevel, and tactile surface is engineered for intimacy, serenity, and shared memories.
+              Because life’s most cherished conversations happen around the table. At Anzari Furniture, every angle, beveled crystal glass edge, and hand-rubbed teak surface is engineered for timeless intimacy, warmth, and enduring family memories.
             </p>
 
             <div className="space-y-4 mb-8">

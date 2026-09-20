@@ -6,7 +6,6 @@ import FeaturedCollectionSection from '../components/home/FeaturedCollectionSect
 import AsymmetricStoryGrid from '../components/home/AsymmetricStoryGrid';
 import EditorialStorySection from '../components/home/EditorialStorySection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
-import JournalSection from '../components/home/JournalSection';
 import NewsletterSection from '../components/home/NewsletterSection';
 import QuickViewModal from '../components/common/QuickViewModal';
 import VideoModal from '../components/common/VideoModal';
@@ -56,10 +55,7 @@ const HomePage = () => {
       {/* 7. Gallery of Collections */}
       <TestimonialsSection onQuickView={(p) => setQuickViewProduct(p)} />
 
-      {/* 8. Editorial Inspiration Journal */}
-      <JournalSection />
-
-      {/* 9. Botanical Newsletter */}
+      {/* 8. Botanical Newsletter */}
       <NewsletterSection />
 
       {/* Modals */}

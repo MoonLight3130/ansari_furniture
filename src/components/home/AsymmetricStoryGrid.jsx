@@ -14,27 +14,35 @@ const AsymmetricStoryGrid = ({ bestsellers = [], onWatchStory, onQuickView }) =>
   const displayProducts = bestsellers.length > 0 ? bestsellers : [
     {
       _id: '1',
-      name: 'Luma Lounge Chair',
-      slug: 'luma-lounge-chair',
-      price: 24999,
-      images: ['https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80'],
-      room: 'Living Room',
+      name: 'Royal Teak Oval Dining Set',
+      slug: 'royal-teak-oval-dining-set',
+      price: 68999,
+      images: ['/images/showroom/teak_oval_dining.jpg'],
+      room: 'Dining Room',
     },
     {
       _id: '2',
-      name: 'Terra Dining Table',
-      slug: 'terra-dining-table',
-      price: 39999,
-      images: ['https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?w=600&q=80'],
+      name: 'Contemporary X-Trestle Dining Suite',
+      slug: 'contemporary-x-trestle-glass-dining-suite',
+      price: 58999,
+      images: ['/images/showroom/cross_leg_dining.jpg'],
       room: 'Dining Room',
     },
     {
       _id: '3',
-      name: 'Astra Bed Frame',
-      slug: 'astra-bed-frame',
-      price: 54999,
-      images: ['https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80'],
-      room: 'Bedroom',
+      name: 'Heritage Ring-Arm Teak Bench',
+      slug: 'heritage-ring-arm-solid-teak-bench',
+      price: 34999,
+      images: ['/images/showroom/circular_motif_bench.jpg'],
+      room: 'Living Room',
+    },
+    {
+      _id: '4',
+      name: 'Nawab Curved Slatted Sofa Ensemble',
+      slug: 'nawab-curved-slatted-sofa-ensemble',
+      price: 89999,
+      images: ['/images/showroom/slatted_sofa_set.jpg'],
+      room: 'Living Room',
     },
   ];
 
@@ -78,7 +86,7 @@ const AsymmetricStoryGrid = ({ bestsellers = [], onWatchStory, onQuickView }) =>
             {/* Macro Craftsmanship Visual with "Design for real life" Script watermark */}
             <div className="relative mt-8 rounded-2xl overflow-hidden aspect-[4/3] border border-white/10">
               <img
-                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80"
+                src="/images/showroom/craftsmanship_macro.jpg"
                 alt="Woodcraft joint"
                 className="w-full h-full object-cover"
               />

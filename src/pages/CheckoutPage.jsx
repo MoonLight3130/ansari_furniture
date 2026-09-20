@@ -268,7 +268,7 @@ const CheckoutPage = () => {
                       required
                       value={formData.city}
                       onChange={handleChange}
-                      placeholder="e.g. Bengaluru"
+                      placeholder="e.g. Kollam / Thiruvananthapuram"
                       className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
                     />
                   </div>
@@ -281,7 +281,7 @@ const CheckoutPage = () => {
                       required
                       value={formData.state}
                       onChange={handleChange}
-                      placeholder="e.g. Karnataka"
+                      placeholder="e.g. Kerala"
                       className="w-full px-4 py-3 rounded-xl border border-[#DED6CC] text-xs focus:outline-none focus:border-[#1F2520]"
                     />
                   </div>
@@ -331,7 +331,7 @@ const CheckoutPage = () => {
                 <div className="space-y-3">
                   {[
                     { id: 'Pay on White Glove Delivery (COD)', label: 'Pay on Delivery (Inspect piece first in your home)', icon: Truck },
-                    { id: 'Showroom Visit & In-Person Inspection', label: 'Showroom Visit & Payment (Inspect in Bandra showroom)', icon: ShieldCheck },
+                    { id: 'Showroom Visit & In-Person Inspection', label: 'Showroom Visit & Payment (Inspect in Kollam or Thiruvananthapuram showroom)', icon: ShieldCheck },
                     { id: 'UPI / Bank Transfer upon Dispatch', label: 'UPI / Bank Transfer (Pay after showroom stock verification)', icon: Lock },
                   ].map((method) => (
                     <label
