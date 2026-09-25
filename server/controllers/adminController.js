@@ -1,22 +1,27 @@
-import Product from '../models/Product.js';
-import Order from '../models/Order.js';
-import User from '../models/User.js';
+import prisma from '../config/prisma.js';
 
 export const getAnalytics = async (req, res) => {
   try {
-    const totalProducts = await Product.countDocuments();
-    const totalOrders = await Order.countDocuments();
-    const totalUsers = await User.countDocuments({ role: 'customer' });
+    const [totalProducts, totalOrders, totalUsers, orders, lowStockProducts, recentOrders] = await Promise.all([
+      prisma.product.count(),
+      prisma.order.count(),
+      prisma.user.count({ where: { role: 'customer' } }),
+      prisma.order.findMany({ select: { total: true, status: true } }),
+      prisma.product.findMany({ where: { stock: { lte: 5 } }, take: 5 }),
+      prisma.order.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 6,
+        include: { items: true },
+      }),
+    ]);
 
-    const orders = await Order.find();
     const totalSales = orders.reduce((acc, order) => acc + (order.total || 0), 0);
 
-    const lowStockProducts = await Product.find({ stock: { $lte: 5 } }).limit(5);
-    const recentOrders = await Order.find().sort({ createdAt: -1 }).limit(6);
-
-    const statusCounts = await Order.aggregate([
-      { $group: { _id: '$status', count: { $sum: 1 } } }
-    ]);
+    const statusCountsMap = {};
+    for (const ord of orders) {
+      statusCountsMap[ord.status] = (statusCountsMap[ord.status] || 0) + 1;
+    }
+    const statusCounts = Object.entries(statusCountsMap).map(([_id, count]) => ({ _id, count }));
 
     res.json({
       totalSales,
@@ -24,70 +29,110 @@ export const getAnalytics = async (req, res) => {
       totalProducts,
       totalUsers,
       lowStockCount: lowStockProducts.length,
-      lowStockProducts,
-      recentOrders,
+      lowStockProducts: lowStockProducts.map((p) => ({ ...p, _id: p.id })),
+      recentOrders: recentOrders.map((o) => ({ ...o, _id: o.id })),
       statusCounts,
     });
   } catch (error) {
+    console.error('getAnalytics error:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const getAdminProducts = async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
-    res.json(products);
+    const products = await prisma.product.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(products.map((p) => ({ ...p, _id: p.id })));
   } catch (error) {
+    console.error('getAdminProducts error:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, price, description, category, room, collectionName, images, stock, material } = req.body;
+    const { name, price, description, category, room, collectionName, images, stock, material, compareAtPrice, dimensions, colors, features, tags, badge } = req.body;
     if (!name || !price || !category || !room) {
       return res.status(400).json({ message: 'Name, price, category, and room are required' });
     }
 
-    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const product = new Product({
-      ...req.body,
-      slug: `${slug}-${Date.now().toString().slice(-4)}`,
-      images: images && images.length ? images : ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80'],
+    const slugBase = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const slug = `${slugBase}-${Date.now().toString().slice(-4)}`;
+
+    const product = await prisma.product.create({
+      data: {
+        name,
+        slug,
+        description: description || '',
+        price: Number(price),
+        compareAtPrice: compareAtPrice ? Number(compareAtPrice) : null,
+        category,
+        room,
+        collectionName: collectionName || 'Milano Collection',
+        images: images && images.length ? images : ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80'],
+        stock: stock !== undefined ? Number(stock) : 20,
+        material: material || 'Solid Teak Wood',
+        dimensions: dimensions || null,
+        colors: colors || null,
+        features: features || [],
+        tags: tags || [],
+        badge: badge || null,
+      },
     });
 
-    const saved = await product.save();
-    res.status(201).json(saved);
+    res.status(201).json({ ...product, _id: product.id });
   } catch (error) {
+    console.error('createProduct error:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!product) return res.status(404).json({ message: 'Product not found' });
-    res.json(product);
+    const { id } = req.params;
+    const updateData = { ...req.body };
+    delete updateData.id;
+    delete updateData._id;
+
+    if (updateData.price) updateData.price = Number(updateData.price);
+    if (updateData.stock !== undefined) updateData.stock = Number(updateData.stock);
+
+    const product = await prisma.product.update({
+      where: { id },
+      data: updateData,
+    });
+
+    res.json({ ...product, _id: product.id });
   } catch (error) {
+    console.error('updateProduct error:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    const { id } = req.params;
+    await prisma.product.delete({
+      where: { id },
+    });
     res.json({ message: 'Product successfully removed' });
   } catch (error) {
+    console.error('deleteProduct error:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const getAdminOrders = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
-    res.json(orders);
+    const orders = await prisma.order.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { items: true },
+    });
+    res.json(orders.map((o) => ({ ...o, _id: o.id })));
   } catch (error) {
+    console.error('getAdminOrders error:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -95,24 +140,41 @@ export const getAdminOrders = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   try {
     const { status, trackingCode } = req.body;
-    const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: 'Order not found' });
+    const data = {};
+    if (status) data.status = status;
+    if (trackingCode !== undefined) data.trackingCode = trackingCode;
 
-    if (status) order.status = status;
-    if (trackingCode) order.trackingCode = trackingCode;
+    const updated = await prisma.order.update({
+      where: { id: req.params.id },
+      data,
+      include: { items: true },
+    });
 
-    const updated = await order.save();
-    res.json(updated);
+    res.json({ ...updated, _id: updated.id });
   } catch (error) {
+    console.error('updateOrderStatus error:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
 export const getAdminUsers = async (req, res) => {
   try {
-    const users = await User.find().select('-password').sort({ createdAt: -1 });
-    res.json(users);
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        phone: true,
+        createdAt: true,
+        updatedAt: true,
+        addresses: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(users.map((u) => ({ ...u, _id: u.id })));
   } catch (error) {
+    console.error('getAdminUsers error:', error);
     res.status(500).json({ message: error.message });
   }
 };

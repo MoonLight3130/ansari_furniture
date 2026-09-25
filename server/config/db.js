@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import prisma from './prisma.js';
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ansari_furniture');
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    await prisma.$connect();
+    console.log('✅ Supabase PostgreSQL Connected via Prisma Client');
   } catch (error) {
-    console.error(`MongoDB Connection Error: ${error.message}`);
+    console.error(`Database Connection Error: ${error.message}`);
     process.exit(1);
   }
 };

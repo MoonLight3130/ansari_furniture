@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import prisma from '../config/prisma.js';
 
 export const protect = async (req, res, next) => {
   let token;
@@ -7,10 +7,27 @@ export const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'ansari_luxury_secret_key_2026_modern_craft');
-      req.user = await User.findById(decoded.id).select('-password');
-      if (!req.user) {
+      
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          phone: true,
+          wishlist: true,
+          addresses: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (!user) {
         return res.status(401).json({ message: 'User not found or token expired' });
       }
+
+      req.user = { ...user, _id: user.id };
       return next();
     } catch (error) {
       console.error('Auth verification failed:', error.message);
@@ -36,7 +53,21 @@ export const optionalAuth = async (req, res, next) => {
     try {
       const token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'ansari_luxury_secret_key_2026_modern_craft');
-      req.user = await User.findById(decoded.id).select('-password');
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          phone: true,
+          wishlist: true,
+          addresses: true,
+        },
+      });
+      if (user) {
+        req.user = { ...user, _id: user.id };
+      }
     } catch (error) {
       // ignore optional auth token errors
     }

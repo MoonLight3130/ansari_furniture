@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      String    @default("customer") // "customer" | "admin"
+  phone     String    @default("")
+  wishlist  String[]  @default([])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  addresses Address[]
+  orders    Order[]
+  reviews   Review[]
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName  String
+  phone     String
+  street    String
+  city      String
+  state     String
+  pincode   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Product {
+  id               String      @id @default(uuid())
+  name             String
+  slug             String      @unique
+  description      String
+  shortDescription String?
+  price            Float
+  compareAtPrice   Float?
+  category         String      // e.g. "Sofas", "Chairs", "Tables", "Beds", "Storage", "Lighting"
+  room             String      // e.g. "Living Room", "Bedroom", "Dining Room", "Home Office", "Outdoor", "Accessories"
+  collectionName   String      @default("Milano Collection")
+  images           String[]
+  secondaryImage   String?
+  material         String      @default("Solid Teak & Bouclé")
+  dimensions       Json?       // { width, height, depth, unit }
+  colors           Json?       // [ { name, hex, bgClass } ]
+  rating           Float       @default(4.8)
+  reviewCount      Int         @default(0)
+  stock            Int         @default(20)
+  featured         Boolean     @default(false)
+  bestseller       Boolean     @default(false)
+  badge            String?     // e.g. "Bestseller", "New Arrival", "Editorial Pick"
+  tags             String[]
+  features         String[]
+  careInstructions String      @default("Wipe clean with a soft dry cloth. Avoid direct sunlight and harsh chemicals.")
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  orderItems       OrderItem[]
+  reviews          Review[]
+
+  @@index([category])
+  @@index([room])
+  @@index([featured])
+  @@index([bestseller])
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  image       String
+  itemCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Collection {
+  id             String   @id @default(uuid())
+  name           String   @unique
+  slug           String   @unique
+  eyebrow        String   @default("CURATED SERIES")
+  tagline        String?
+  description    String
+  heroImage      String
+  secondaryImage String?
+  accentColor    String   @default("#1C251E")
+  itemCount      Int      @default(0)
+  createdAt      DateTime @default(now())
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customerDetails Json        // { fullName, email, phone }
+  shippingAddress Json        // { street, city, state, pincode }
+  deliveryMethod  String      @default("Standard White Glove")
+  paymentMethod   String      @default("Card / UPI")
+  paymentStatus   String      @default("Completed") // "Pending" | "Completed" | "Failed"
+  subtotal        Float
+  discount        Float       @default(0)
+  shippingFee     Float       @default(0)
+  tax             Float       @default(0)
+  total           Float
+  status          String      @default("Processing") // "Processing" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled"
+  trackingCode    String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  items           OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  price     Float
+  quantity  Int     @default(1)
+  image     String
+  color     String?
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Review {
+  id            String   @id @default(uuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName      String
+  userLocation  String   @default("Mumbai, India")
+  rating        Int
+  title         String   @default("")
+  comment       String
+  verifiedBuyer Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+  status       String   @default("active")
+}
