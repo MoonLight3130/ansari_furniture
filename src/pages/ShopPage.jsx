@@ -12,6 +12,7 @@ const ShopPage = () => {
   const [filterMeta, setFilterMeta] = useState({
     rooms: ['Living Room', 'Bedroom', 'Dining Room', 'Home Office', 'Outdoor', 'Accessories'],
     categories: ['Sofas', 'Chairs', 'Tables', 'Beds', 'Storage', 'Lighting'],
+    collections: ['Teak Collection', 'Traditional Collection', 'Modern Collection', 'Living Room Suites', 'Solid Wood'],
     materials: ['Teak', 'Walnut', 'Oak', 'Bouclé', 'Linen', 'Travertine'],
     minPrice: 0,
     maxPrice: 150000,
@@ -162,6 +163,12 @@ const ShopPage = () => {
                 <button onClick={() => updateFilter('category', 'All')}><X className="w-3 h-3" /></button>
               </span>
             )}
+            {currentCollection !== 'All' && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#DED6CC] text-xs font-medium text-[#1F2520]">
+                Collection: {currentCollection}
+                <button onClick={() => updateFilter('collection', 'All')}><X className="w-3 h-3" /></button>
+              </span>
+            )}
             {currentMaterial !== 'All' && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#DED6CC] text-xs font-medium text-[#1F2520]">
                 Material: {currentMaterial}
@@ -256,6 +263,34 @@ const ShopPage = () => {
               </div>
             </div>
 
+            {/* Collection Filter */}
+            <div className="pt-4 border-t border-[#EAE2D9]">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#736B63] mb-3">
+                Collection
+              </h4>
+              <div className="space-y-1.5">
+                <button
+                  onClick={() => updateFilter('collection', 'All')}
+                  className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
+                    currentCollection === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                  }`}
+                >
+                  <span>All Collections</span>
+                </button>
+                {(filterMeta.collections || []).map((col) => (
+                  <button
+                    key={col}
+                    onClick={() => updateFilter('collection', col)}
+                    className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
+                      currentCollection === col ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                    }`}
+                  >
+                    <span>{col}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Material Filter */}
             <div className="pt-4 border-t border-[#EAE2D9]">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-[#736B63] mb-3">
@@ -330,6 +365,153 @@ const ShopPage = () => {
         isOpen={!!quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
       />
+
+      {/* Mobile Filter Modal */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileFilterOpen(false)}
+          />
+          <div className="relative ml-auto w-full max-w-xs bg-[#FAF7F2] h-full shadow-2xl p-6 overflow-y-auto z-10 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between pb-4 border-b border-[#EAE2D9]">
+                <h3 className="font-serif text-lg font-semibold text-[#1F2520]">Filters</h3>
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="p-1 rounded-full text-[#736B63] hover:text-[#1F2520]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Space / Room */}
+              <div className="py-4 border-b border-[#EAE2D9]">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-[#736B63] mb-2.5">
+                  Space / Room
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => updateFilter('room', 'All')}
+                    className={`px-3 py-1 rounded-full text-xs transition-all ${
+                      currentRoom === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {filterMeta.rooms.map((room) => (
+                    <button
+                      key={room}
+                      onClick={() => updateFilter('room', room)}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${
+                        currentRoom === room ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                      }`}
+                    >
+                      {room}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category */}
+              <div className="py-4 border-b border-[#EAE2D9]">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-[#736B63] mb-2.5">
+                  Category
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => updateFilter('category', 'All')}
+                    className={`px-3 py-1 rounded-full text-xs transition-all ${
+                      currentCategory === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {filterMeta.categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => updateFilter('category', cat)}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${
+                        currentCategory === cat ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Collection */}
+              <div className="py-4 border-b border-[#EAE2D9]">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-[#736B63] mb-2.5">
+                  Collection
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => updateFilter('collection', 'All')}
+                    className={`px-3 py-1 rounded-full text-xs transition-all ${
+                      currentCollection === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {(filterMeta.collections || []).map((col) => (
+                    <button
+                      key={col}
+                      onClick={() => updateFilter('collection', col)}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${
+                        currentCollection === col ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                      }`}
+                    >
+                      {col}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Material */}
+              <div className="py-4">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-[#736B63] mb-2.5">
+                  Material
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {['Teak', 'Walnut', 'Oak', 'Bouclé', 'Linen', 'Travertine'].map((mat) => (
+                    <button
+                      key={mat}
+                      onClick={() => updateFilter('material', currentMaterial === mat ? 'All' : mat)}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${
+                        currentMaterial === mat ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                      }`}
+                    >
+                      {mat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-[#EAE2D9] space-y-2">
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-full py-3 rounded-full bg-[#1F2520] text-white text-xs font-medium text-center"
+              >
+                Apply Filters
+              </button>
+              {hasActiveFilters && (
+                <button
+                  onClick={() => {
+                    clearAllFilters();
+                    setMobileFilterOpen(false);
+                  }}
+                  className="w-full py-2.5 rounded-full border border-[#DED6CC] text-[#7B5E43] text-xs font-medium text-center"
+                >
+                  Reset All Filters
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

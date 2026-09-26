@@ -37,6 +37,7 @@ serve(async (req) => {
     const { data: review, error: reviewErr } = await supabaseAdmin
       .from('Review')
       .insert({
+        id: crypto.randomUUID(),
         productId,
         userId,
         userName: userName || 'Verified Customer',
@@ -45,6 +46,8 @@ serve(async (req) => {
         title: title || '',
         comment,
         verifiedBuyer: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
       .select()
       .single();

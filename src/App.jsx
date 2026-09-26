@@ -17,6 +17,7 @@ import CollectionsPage from './pages/CollectionsPage';
 import RoomsPage from './pages/RoomsPage';
 import AboutPage from './pages/AboutPage';
 import WishlistPage from './pages/WishlistPage';
+import AdminSubscribersPage from './pages/AdminSubscribersPage';
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -69,6 +70,7 @@ const AppContent = () => {
             <Route path="/rooms" element={<PageTransition><RoomsPage /></PageTransition>} />
             <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
             <Route path="/inspiration" element={<PageTransition><CollectionsPage /></PageTransition>} />
+            <Route path="/admin/subscribers" element={<PageTransition><AdminSubscribersPage /></PageTransition>} />
             {/* Fallback route */}
             <Route path="*" element={
               <PageTransition>

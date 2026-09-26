@@ -216,6 +216,33 @@ const api = {
         return { data: normalize(data) };
       }
 
+      // 10. /admin/subscribers or /newsletter/subscribers
+      if (pathname === '/admin/subscribers' || pathname === '/newsletter/subscribers') {
+        const search = (searchParams.get('search') || '').trim();
+        const status = searchParams.get('status') || '';
+
+        let query = supabase
+          .from('NewsletterSubscriber')
+          .select('id, email, userId, subscribedAt, status, user:User(id, name, email, role, phone)')
+          .order('subscribedAt', { ascending: false });
+
+        if (search) {
+          query = query.ilike('email', `%${search}%`);
+        }
+
+        if (status && status !== 'all') {
+          query = query.eq('status', status);
+        }
+
+        const { data, error } = await query;
+        if (error) {
+          console.error('Error fetching subscribers:', error);
+          throw error;
+        }
+
+        return { data: normalize(data || []) };
+      }
+
       // Fallback
       throw new Error(`Unhandled GET path: ${pathname}`);
     } catch (err) {
@@ -254,10 +281,12 @@ const api = {
       // 2. /reviews -> Insert into Review table (Postgres trigger auto-recalculates product rating)
       if (pathname === '/reviews' || pathname === '/reviews/') {
         const { data: { user } } = await supabase.auth.getUser();
+        const now = new Date().toISOString();
 
         const { data, error } = await supabase
           .from('Review')
           .insert({
+            id: crypto.randomUUID(),
             productId: body.productId,
             userId: user ? user.id : null,
             userName: body.userName || 'Customer',
@@ -266,6 +295,8 @@ const api = {
             title: body.title || '',
             comment: body.comment || '',
             verifiedBuyer: true,
+            createdAt: now,
+            updatedAt: now,
           })
           .select()
           .single();
@@ -276,19 +307,63 @@ const api = {
 
       // 3. /newsletter/subscribe
       if (pathname === '/newsletter/subscribe') {
-        const email = (body.email || '').toLowerCase().trim();
-        const { error } = await supabase
-          .from('NewsletterSubscriber')
-          .insert({ email });
+        const rawEmail = body.email;
+        if (!rawEmail || typeof rawEmail !== 'string') {
+          const err = new Error('Please enter a valid email address');
+          err.code = 'INVALID_EMAIL';
+          throw err;
+        }
 
-        if (error && error.code !== '23505') {
-          // 23505 is unique violation (already subscribed)
-          throw error;
+        const email = rawEmail.toLowerCase().trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          const err = new Error('Please enter a valid email address');
+          err.code = 'INVALID_EMAIL';
+          throw err;
+        }
+
+        // Check if visitor is authenticated
+        let userId = null;
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user && user.id) {
+            userId = user.id;
+          }
+        } catch {
+          // If auth check fails, gracefully treat as guest (userId remains null)
+          userId = null;
+        }
+
+        const { data, error } = await supabase
+          .from('NewsletterSubscriber')
+          .insert({
+            email,
+            userId,
+            subscribedAt: new Date().toISOString(),
+            status: 'active',
+          })
+          .select('id, email, userId, subscribedAt, status')
+          .single();
+
+        if (error) {
+          // Duplicate email (PostgreSQL error code 23505)
+          if (error.code === '23505') {
+            const duplicateError = new Error('This email address is already subscribed to our journal.');
+            duplicateError.code = '23505';
+            duplicateError.status = 409;
+            throw duplicateError;
+          }
+
+          console.error('Newsletter subscription database error:', error);
+          const dbError = new Error(error.message || 'Database error occurred while processing subscription.');
+          dbError.code = error.code || 'DB_ERROR';
+          throw dbError;
         }
 
         return {
           data: {
             message: 'Welcome to Ansari Furniture. You have successfully subscribed.',
+            subscriber: normalize(data),
           },
         };
       }

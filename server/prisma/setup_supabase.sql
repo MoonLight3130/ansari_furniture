@@ -44,6 +44,24 @@ ALTER TABLE "Review" ALTER COLUMN "updatedAt" SET DEFAULT now();
 
 ALTER TABLE "NewsletterSubscriber" ALTER COLUMN "id" SET DEFAULT gen_random_uuid()::text;
 ALTER TABLE "NewsletterSubscriber" ALTER COLUMN "subscribedAt" SET DEFAULT now();
+ALTER TABLE "NewsletterSubscriber" ADD COLUMN IF NOT EXISTS "userId" TEXT NULL;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_name = 'NewsletterSubscriber_userId_fkey'
+      AND table_name = 'NewsletterSubscriber'
+  ) THEN
+    ALTER TABLE "NewsletterSubscriber"
+    ADD CONSTRAINT "NewsletterSubscriber_userId_fkey"
+    FOREIGN KEY ("userId")
+    REFERENCES "User"("id")
+    ON DELETE SET NULL;
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS "NewsletterSubscriber_userId_idx" ON "NewsletterSubscriber"("userId");
 
 -- 3. Public Read Access Policies (Catalog, Reviews, Collections, Categories)
 DROP POLICY IF EXISTS "Allow public read access to products" ON "Product";
@@ -73,6 +91,9 @@ CREATE POLICY "Allow users to read own profile" ON "User" FOR SELECT USING (auth
 
 DROP POLICY IF EXISTS "Allow users to update own profile" ON "User";
 CREATE POLICY "Allow users to update own profile" ON "User" FOR UPDATE USING (auth.uid()::text = "id");
+
+DROP POLICY IF EXISTS "Allow users to insert own profile" ON "User";
+CREATE POLICY "Allow users to insert own profile" ON "User" FOR INSERT WITH CHECK (auth.uid()::text = "id");
 
 DROP POLICY IF EXISTS "Allow users to read own addresses" ON "Address";
 CREATE POLICY "Allow users to read own addresses" ON "Address" FOR SELECT USING (auth.uid()::text = "userId");
@@ -282,3 +303,31 @@ BEGIN
   RETURN v_result;
 END;
 $$;
+
+-- 9. Trigger: Automatically Synchronize auth.users -> public.User on signup
+CREATE OR REPLACE FUNCTION public.handle_new_auth_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public."User" ("id", "name", "email", "password", "role", "createdAt", "updatedAt")
+  VALUES (
+    NEW.id::text,
+    COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
+    NEW.email,
+    '',
+    'customer',
+    now(),
+    now()
+  )
+  ON CONFLICT ("id") DO UPDATE
+  SET "email" = EXCLUDED."email",
+      "name" = COALESCE(EXCLUDED."name", public."User"."name"),
+      "updatedAt" = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT OR UPDATE ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_auth_user();
+

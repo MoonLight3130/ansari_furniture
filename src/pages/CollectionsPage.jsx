@@ -137,7 +137,7 @@ const collections = [
   },
   {
     id: 'solid-wood',
-    name: 'Solid Wood Suites',
+    name: 'Solid Wood',
     eyebrow: 'HEIRLOOM TIMBER',
     tagline: '100% Solid Hardwood King Beds & Lifetime Wardrobes',
     description: 'Zero MDF. Zero particle board. Massive seasoned teakwood king bed frames, lockable 4-door timber wardrobes, and artisan storage handcrafted to withstand generations of Kerala weather.',

@@ -98,6 +98,7 @@ const Footer = () => {
             <span>© {new Date().getFullYear()} Ansari Furniture. All rights reserved.</span>
             <Link to="/privacy" className="hover:text-[#1F2520] transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-[#1F2520] transition-colors">Terms of Service</Link>
+            <Link to="/admin/subscribers" className="hover:text-[#1F2520] transition-colors">Admin Portal</Link>
           </div>
         </div>
 

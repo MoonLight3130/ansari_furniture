@@ -2,10 +2,11 @@ import prisma from '../config/prisma.js';
 
 export const getAnalytics = async (req, res) => {
   try {
-    const [totalProducts, totalOrders, totalUsers, orders, lowStockProducts, recentOrders] = await Promise.all([
+    const [totalProducts, totalOrders, totalUsers, totalSubscribers, orders, lowStockProducts, recentOrders] = await Promise.all([
       prisma.product.count(),
       prisma.order.count(),
       prisma.user.count({ where: { role: 'customer' } }),
+      prisma.newsletterSubscriber.count(),
       prisma.order.findMany({ select: { total: true, status: true } }),
       prisma.product.findMany({ where: { stock: { lte: 5 } }, take: 5 }),
       prisma.order.findMany({
@@ -28,6 +29,7 @@ export const getAnalytics = async (req, res) => {
       totalOrders,
       totalProducts,
       totalUsers,
+      totalSubscribers,
       lowStockCount: lowStockProducts.length,
       lowStockProducts: lowStockProducts.map((p) => ({ ...p, _id: p.id })),
       recentOrders: recentOrders.map((o) => ({ ...o, _id: o.id })),
@@ -175,6 +177,49 @@ export const getAdminUsers = async (req, res) => {
     res.json(users.map((u) => ({ ...u, _id: u.id })));
   } catch (error) {
     console.error('getAdminUsers error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAdminSubscribers = async (req, res) => {
+  try {
+    const { search, status } = req.query;
+    const where = {};
+
+    if (search) {
+      where.email = { contains: search, mode: 'insensitive' };
+    }
+
+    if (status && status !== 'all') {
+      where.status = status;
+    }
+
+    const subscribers = await prisma.newsletterSubscriber.findMany({
+      where,
+      orderBy: { subscribedAt: 'desc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            phone: true,
+          },
+        },
+      },
+    });
+
+    res.json(
+      subscribers.map((s) => ({
+        ...s,
+        _id: s.id,
+        isGuest: !s.userId,
+        user: s.user || null,
+      }))
+    );
+  } catch (error) {
+    console.error('getAdminSubscribers error:', error);
     res.status(500).json({ message: error.message });
   }
 };

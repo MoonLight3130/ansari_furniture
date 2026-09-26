@@ -65,6 +65,7 @@ serve(async (req) => {
         { count: totalProducts },
         { count: totalOrders },
         { count: totalUsers },
+        { count: totalSubscribers },
         { data: orders },
         { data: lowStockProducts },
         { data: recentOrders },
@@ -72,6 +73,7 @@ serve(async (req) => {
         supabaseAdmin.from('Product').select('*', { count: 'exact', head: true }),
         supabaseAdmin.from('Order').select('*', { count: 'exact', head: true }),
         supabaseAdmin.from('User').select('*', { count: 'exact', head: true }).eq('role', 'customer'),
+        supabaseAdmin.from('NewsletterSubscriber').select('*', { count: 'exact', head: true }),
         supabaseAdmin.from('Order').select('total, status'),
         supabaseAdmin.from('Product').select('*').lte('stock', 5).limit(5),
         supabaseAdmin.from('Order').select('*, items:OrderItem(*)').order('createdAt', { ascending: false }).limit(6),
@@ -90,6 +92,7 @@ serve(async (req) => {
           totalOrders: totalOrders || 0,
           totalProducts: totalProducts || 0,
           totalUsers: totalUsers || 0,
+          totalSubscribers: totalSubscribers || 0,
           lowStockCount: (lowStockProducts || []).length,
           lowStockProducts: (lowStockProducts || []).map((p: any) => ({ ...p, _id: p.id })),
           recentOrders: (recentOrders || []).map((o: any) => ({ ...o, _id: o.id })),
@@ -214,6 +217,43 @@ serve(async (req) => {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
+
+    // 5. Subscribers List: GET /subscribers
+    if (path.startsWith('/subscribers')) {
+      const search = url.searchParams.get('search')?.trim();
+      const status = url.searchParams.get('status')?.trim();
+
+      let query = supabaseAdmin
+        .from('NewsletterSubscriber')
+        .select('id, email, userId, subscribedAt, status, user:User(id, name, email, role, phone)')
+        .order('subscribedAt', { ascending: false });
+
+      if (search) {
+        query = query.ilike('email', `%${search}%`);
+      }
+
+      if (status && status !== 'all') {
+        query = query.eq('status', status);
+      }
+
+      const { data: subscribers, error: subError } = await query;
+      if (subError) throw subError;
+
+      return new Response(
+        JSON.stringify(
+          (subscribers || []).map((s: any) => ({
+            ...s,
+            _id: s.id,
+            isGuest: !s.userId,
+            user: s.user || null,
+          }))
+        ),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     return new Response(JSON.stringify({ message: 'Admin endpoint not found' }), {

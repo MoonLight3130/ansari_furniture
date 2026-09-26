@@ -8,6 +8,7 @@ import {
   getAdminOrders,
   updateOrderStatus,
   getAdminUsers,
+  getAdminSubscribers,
 } from '../controllers/adminController.js';
 import { protect, adminOnly } from '../middleware/auth.js';
 
@@ -23,5 +24,6 @@ router.delete('/products/:id', deleteProduct);
 router.get('/orders', getAdminOrders);
 router.put('/orders/:id/status', updateOrderStatus);
 router.get('/users', getAdminUsers);
+router.get('/subscribers', getAdminSubscribers);
 
 export default router;

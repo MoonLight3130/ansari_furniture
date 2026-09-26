@@ -11,19 +11,26 @@ const NewsletterSection = () => {
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) {
+    const cleanEmail = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
       addToast('Please enter a valid email address', 'error');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await api.post('/newsletter/subscribe', { email });
+      const res = await api.post('/newsletter/subscribe', { email: cleanEmail });
       setSubscribed(true);
-      addToast(res.data.message || 'Subscribed successfully!');
+      addToast(res.data?.message || 'Subscribed successfully!');
       setEmail('');
     } catch (err) {
-      addToast(err.response?.data?.message || 'Subscription failed', 'error');
+      const errorMsg = err.response?.data?.message || err.message || 'Subscription failed. Please try again.';
+      if (err.code === '23505' || errorMsg.toLowerCase().includes('already subscribed')) {
+        addToast('You are already subscribed to the Ansari Furniture journal.', 'info');
+      } else {
+        addToast(errorMsg, 'error');
+      }
     } finally {
       setLoading(false);
     }
