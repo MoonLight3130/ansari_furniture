@@ -6,35 +6,35 @@ const roomList = [
   {
     title: 'Living Room',
     subtitle: 'Where conversations flow and comfort anchors the home.',
-    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1000&q=80',
+    image: '/images/rooms/living-room.jpg',
     description: 'Curved sofas, sculptural armchairs, and low travertine tables thoughtfully composed for shared life.',
     popular: ['The Habitat Sofa', 'Luma Lounge Chair', 'Aura Travertine Coffee Table'],
   },
   {
     title: 'Bedroom',
     subtitle: 'A quiet sanctuary for restorative repose.',
-    image: 'https://images.unsplash.com/photo-1540518614846-7ede433c4550?w=1000&q=80',
+    image: '/images/rooms/bedroom.jpg',
     description: 'Upholstered linen beds, fluted nightstands, and soothing textures that quiet the mind at dusk.',
     popular: ['Astra Bed Frame', 'Vera Fluted Nightstand', 'Komorebi Lamp'],
   },
   {
     title: 'Dining Room',
     subtitle: 'Celebrating the warmth of shared tables.',
-    image: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1000&q=80',
+    image: '/images/rooms/dining-room.jpg',
     description: 'Substantial solid walnut and teak tables designed for intimate family meals and celebratory dinner parties.',
     popular: ['Terra Dining Table', 'The Modern Woodcraft Dining Set'],
   },
   {
     title: 'Home Office',
     subtitle: 'Clarity, posture, and creative calm.',
-    image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=1000&q=80',
+    image: '/images/rooms/home-office.jpg',
     description: 'Clean solid oak desks with integrated wire routing and ergonomic seating designed for inspired daily focus.',
     popular: ['Atelier Minimalist Oak Desk', 'Kyoto Bookshelf'],
   },
   {
     title: 'Outdoor',
     subtitle: 'Seamless harmony with the elements.',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1000&q=80',
+    image: '/images/rooms/outdoor.jpg',
     description: 'All-weather teak and UV-resistant Sunbrella loungers engineered for garden verandas and breezy rooftops.',
     popular: ['Tivoli Rattan Sun Lounger'],
   },
@@ -44,7 +44,7 @@ const RoomsPage = () => {
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
+
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="text-[11px] font-medium tracking-[0.3em] text-[#736B63] uppercase block mb-2">
             EXPLORE BY SPACE
