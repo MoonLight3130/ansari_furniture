@@ -272,7 +272,7 @@ const ProductDetailPage = () => {
                     className="flex-1 py-3.5 px-6 rounded-full bg-[#1F2520] text-[#FAF7F2] hover:bg-[#2A352C] transition-all text-xs font-medium tracking-wide flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
                   >
                     <ShoppingBag className="w-4 h-4" />
-                    <span>Add to Bag</span>
+                    <span>Add to Cart</span>
                   </button>
 
                   <button
@@ -302,11 +302,11 @@ const ProductDetailPage = () => {
               <div className="mt-8 pt-6 border-t border-[#EAE2D9] grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2.5 text-xs text-[#5C564F]">
                   <Truck className="w-4 h-4 text-[#2A352C]" />
-                  <span>Free White Glove Delivery</span>
+                  <span>Delivery Across India</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs text-[#5C564F]">
                   <ShieldCheck className="w-4 h-4 text-[#2A352C]" />
-                  <span>10-Year Timber Warranty</span>
+                  <span>Timber Warranty</span>
                 </div>
               </div>
 

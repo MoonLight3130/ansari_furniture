@@ -51,14 +51,13 @@ const HeroSection = ({ onQuickViewProduct }) => {
                 <span>EXPLORE COLLECTION</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              
-              <button
-                onClick={() => scrollToSection('showroom-experience')}
+              <Link
+                to="/about"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-[#DFD5C6] bg-white/60 hover:bg-white text-[#241A14] transition-all text-xs font-semibold tracking-wider uppercase cursor-pointer"
               >
                 <Compass className="w-3.5 h-3.5 text-[#70482D]" />
                 <span>VISIT OUR SHOWROOM</span>
-              </button>
+              </Link>
             </div>
 
             {/* Heritage Trust Metrics Bar */}
@@ -98,39 +97,9 @@ const HeroSection = ({ onQuickViewProduct }) => {
               {/* Subtle Warm Vignette Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
 
-              {/* Floating Product Tag Pill Card (The Royal Teak Oval Dining Set) */}
-              <Link
-                to="/product/royal-teak-oval-dining-set"
-                className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 z-20 flex items-center gap-3.5 px-4 py-3 rounded-xl bg-[#F8F4EC]/95 backdrop-blur-md border border-[#DFD5C6] shadow-xl hover:shadow-2xl hover:scale-105 transition-all group"
-              >
-                <div className="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-[#DFD5C6]">
-                  <img
-                    src="/images/showroom/teak_oval_dining.jpg"
-                    alt="Royal Teak Oval Dining Set"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="text-left">
-                  <span className="block text-[9px] tracking-wider uppercase font-semibold text-[#A66A3A]">
-                    SHOWROOM HERO PIECE
-                  </span>
-                  <span className="block font-serif text-xs sm:text-sm font-bold text-[#241A14] group-hover:text-[#70482D] transition-colors">
-                    Royal Teak Oval Dining Set
-                  </span>
-                  <span className="block text-[11px] font-bold text-[#70482D]">
-                    ₹68,999 · 6 Seater Glass Top
-                  </span>
-                </div>
-                <div className="w-7 h-7 rounded-full bg-[#3A261B] text-[#F8F4EC] flex items-center justify-center group-hover:bg-[#241A14] transition-colors shrink-0">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </Link>
 
               {/* Craftsmanship Badge on Top Right */}
-              <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#241A14]/80 text-[#F8F4EC] backdrop-blur-xs border border-white/20 text-[11px]">
-                <Sparkles className="w-3.5 h-3.5 text-[#B18A52]" />
-                <span>Handcrafted in Solid Teak</span>
-              </div>
+
             </div>
 
           </div>

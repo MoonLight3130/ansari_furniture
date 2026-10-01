@@ -20,7 +20,7 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const handleWhatsAppCartEnquiry = () => {
-    const showroomNumber = '919876543210';
+    const showroomNumber = '919496271949';
     let text = `*Showroom Furniture Enquiry — Anzari Furniture*\n\n`;
     text += `Hello, I would like to enquire about the availability, custom finish, and delivery of the following pieces:\n\n`;
     cartItems.forEach((item, index) => {

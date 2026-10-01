@@ -18,7 +18,7 @@ const WhatsAppEnquiryModal = ({ isOpen, onClose, product = null }) => {
 
   const handleSendToWhatsApp = (e) => {
     e.preventDefault();
-    const showroomNumber = '919876543210';
+    const showroomNumber = '919496271949';
     
     let text = `*New Furniture Enquiry — Anzari Furniture Showroom*\n`;
     if (product) {

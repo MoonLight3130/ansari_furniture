@@ -139,7 +139,7 @@ const WishlistPage = () => {
                     </button>
 
                     <a
-                      href={`https://wa.me/919447123456?text=Hello%20Anzari%20Furniture%2C%20I%20am%20enquiring%20about%20the%20${encodeURIComponent(product.name)}.`}
+                      href={`https://wa.me/919496271949?text=Hello%20Anzari%20Furniture%2C%20I%20am%20enquiring%20about%20the%20${encodeURIComponent(product.name)}.`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full py-2 px-3 rounded-full border border-[#DFD5C6] text-[#241A14] hover:border-[#25D366] hover:text-[#25D366] text-[11px] font-medium transition-all flex items-center justify-center gap-1.5"

@@ -77,7 +77,7 @@ const CheckoutPage = () => {
       setConfirmedOrder(res.data);
 
       // Automatically launch WhatsApp with order summary for showroom confirmation
-      const showroomNumber = '919876543210';
+      const showroomNumber = '919496271949';
       let waText = `*Showroom Order Booking — Anzari Furniture*\n\n`;
       waText += `*Order #:* ${res.data.orderNumber || 'Pending'}\n`;
       waText += `*Customer:* ${formData.fullName} (${formData.phone})\n`;
@@ -148,7 +148,7 @@ const CheckoutPage = () => {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
               <a
-                href={`https://wa.me/919876543210?text=${encodeURIComponent(`Hello Anzari Furniture, I placed order enquiry #${confirmedOrder.orderNumber} for ₹${confirmedOrder.total?.toLocaleString('en-IN')}. Please confirm dispatch details.`)}`}
+                href={`https://wa.me/919496271949?text=${encodeURIComponent(`Hello Anzari Furniture, I placed order enquiry #${confirmedOrder.orderNumber} for ₹${confirmedOrder.total?.toLocaleString('en-IN')}. Please confirm dispatch details.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"

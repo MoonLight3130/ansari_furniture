@@ -251,7 +251,7 @@ const CollectionsPage = () => {
                     </Link>
 
                     <a
-                      href={`https://wa.me/919447123456?text=Hello%20Anzari%20Furniture%2C%20I%20am%20interested%20in%20the%20${encodeURIComponent(col.name)}.`}
+                      href={`https://wa.me/919496271949?text=Hello%20Anzari%20Furniture%2C%20I%20am%20interested%20in%20the%20${encodeURIComponent(col.name)}.`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#DFD5C6] hover:border-[#25D366] text-[#241A14] text-xs font-medium hover:text-[#25D366] transition-all shadow-xs"
@@ -366,7 +366,7 @@ const CollectionsPage = () => {
                 View Showroom Addresses
               </Link>
               <a
-                href="https://wa.me/919447123456?text=Hello%20Anzari%20Furniture%2C%20I%20would%20like%20to%20book%20a%20showroom%20visit."
+                href="https://wa.me/919496271949?text=Hello%20Anzari%20Furniture%2C%20I%20would%20like%20to%20book%20a%20showroom%20visit."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3.5 rounded-full border border-white/30 text-white text-xs font-semibold tracking-wider uppercase text-center hover:bg-white/10 transition-all flex items-center justify-center gap-2"

@@ -212,7 +212,7 @@ const Navbar = ({ onOpenSearch }) => {
               {/* Drawer Bottom Contact & WhatsApp CTA */}
               <div className="pt-6 border-t border-[#DFD5C6] space-y-3">
                 <a
-                  href="https://wa.me/919876543210?text=Hello%20Anzari%20Furniture%2C%20I%20would%20like%20to%20enquire%20about%20your%20showroom%20collection."
+                  href="https://wa.me/919496271949?text=Hello%20Anzari%20Furniture%2C%20I%20would%20like%20to%20enquire%20about%20your%20showroom%20collection."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-3 px-4 rounded-full bg-[#3A261B] text-[#F8F4EC] text-xs font-medium flex items-center justify-center gap-2 shadow-md border border-[#B18A52]/40"

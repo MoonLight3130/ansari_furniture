@@ -38,6 +38,13 @@ const roomList = [
     description: 'All-weather teak and UV-resistant Sunbrella loungers engineered for garden verandas and breezy rooftops.',
     popular: ['Tivoli Rattan Sun Lounger'],
   },
+  {
+    title: 'Kitchen',
+    subtitle: 'Where craftsmanship meets everyday living.',
+    image: '/images/rooms/Kitchen.jpg',
+    description: 'Thoughtfully crafted kitchen furniture and dining essentials designed to bring warmth, functionality, and timeless character to the heart of your home.',
+    popular: ['Solid Teak Kitchen Island'],
+  }
 ];
 
 const RoomsPage = () => {
