@@ -57,10 +57,10 @@ const AsymmetricStoryGrid = ({ bestsellers = [], onWatchStory, onQuickView }) =>
   return (
     <section className="py-12 lg:py-16 bg-[#FAF7F2] border-b border-[#EAE2D9]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
+
         {/* Asymmetric 3-Column Section Matching Reference Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* 1. Left Card: "More Than Furniture" (Dark Forest / Deep Charcoal) - col-span-3 */}
           <div className="lg:col-span-3 bg-[#1C251E] rounded-3xl p-6 sm:p-7 text-[#FAF7F2] flex flex-col justify-between relative overflow-hidden shadow-md">
             <div>
@@ -91,7 +91,7 @@ const AsymmetricStoryGrid = ({ bestsellers = [], onWatchStory, onQuickView }) =>
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              
+
               {/* Handwritten "Design for real life" Calligraphy accent from reference */}
               <span className="absolute bottom-2.5 right-3 font-script text-2xl text-white/90 font-bold select-none drop-shadow-md">
                 Design for real life
@@ -172,7 +172,7 @@ const AsymmetricStoryGrid = ({ bestsellers = [], onWatchStory, onQuickView }) =>
                       onClick={() => addToCart(prod, 1)}
                       className="mt-3 w-full py-1.5 rounded-full border border-[#DED6CC] hover:bg-[#1F2520] hover:text-[#FAF7F2] text-[11px] font-medium transition-colors"
                     >
-                      Add to Bag
+                      Add to Cart
                     </button>
                   </div>
                 );
@@ -201,21 +201,13 @@ const AsymmetricStoryGrid = ({ bestsellers = [], onWatchStory, onQuickView }) =>
             {/* Bedroom Image with "Same Rooms New Stories" Script Callout */}
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-sm bg-white">
               <img
-                src="https://images.unsplash.com/photo-1540518614846-7ede433c4550?w=800&q=80"
+                src="/images/rooms/bedroom.jpg"
                 alt="Bedroom collection"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-              
-              {/* Handwritten Script Callout matching "Same Rooms New Stories" in reference */}
-              <div className="absolute top-3 right-3 text-right">
-                <span className="font-script text-2xl text-white font-bold block leading-none drop-shadow-md">
-                  Same Rooms
-                </span>
-                <span className="font-script text-2xl text-white font-bold block leading-none drop-shadow-md">
-                  New Stories
-                </span>
-              </div>
+
+
             </div>
           </div>
 

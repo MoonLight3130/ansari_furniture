@@ -87,7 +87,7 @@ const ShopPage = () => {
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-8 sm:py-12">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
+
         {/* Breadcrumb */}
         <nav className="text-xs text-[#8C8379] mb-4 flex items-center gap-2">
           <Link to="/" className="hover:text-[#1F2520] transition-colors">Home</Link>
@@ -192,7 +192,7 @@ const ShopPage = () => {
 
         {/* Main Content Grid (Sidebar Filters + Products Grid) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8 items-start">
-          
+
           {/* Desktop Filters Sidebar (col-span-3) */}
           <aside className="hidden lg:block lg:col-span-3 space-y-6 sticky top-24 bg-white/70 backdrop-blur-xs p-6 rounded-3xl border border-[#EAE2D9]">
             <div className="flex items-center justify-between pb-3 border-b border-[#EAE2D9]">
@@ -215,9 +215,8 @@ const ShopPage = () => {
               <div className="space-y-1.5">
                 <button
                   onClick={() => updateFilter('room', 'All')}
-                  className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
-                    currentRoom === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
-                  }`}
+                  className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${currentRoom === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                    }`}
                 >
                   <span>All Spaces</span>
                 </button>
@@ -225,9 +224,8 @@ const ShopPage = () => {
                   <button
                     key={room}
                     onClick={() => updateFilter('room', room)}
-                    className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
-                      currentRoom === room ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
-                    }`}
+                    className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${currentRoom === room ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                      }`}
                   >
                     <span>{room}</span>
                   </button>
@@ -243,9 +241,8 @@ const ShopPage = () => {
               <div className="space-y-1.5">
                 <button
                   onClick={() => updateFilter('category', 'All')}
-                  className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
-                    currentCategory === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
-                  }`}
+                  className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${currentCategory === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                    }`}
                 >
                   <span>All Categories</span>
                 </button>
@@ -253,9 +250,8 @@ const ShopPage = () => {
                   <button
                     key={cat}
                     onClick={() => updateFilter('category', cat)}
-                    className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
-                      currentCategory === cat ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
-                    }`}
+                    className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${currentCategory === cat ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                      }`}
                   >
                     <span>{cat}</span>
                   </button>
@@ -271,9 +267,8 @@ const ShopPage = () => {
               <div className="space-y-1.5">
                 <button
                   onClick={() => updateFilter('collection', 'All')}
-                  className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
-                    currentCollection === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
-                  }`}
+                  className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${currentCollection === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                    }`}
                 >
                   <span>All Collections</span>
                 </button>
@@ -281,9 +276,8 @@ const ShopPage = () => {
                   <button
                     key={col}
                     onClick={() => updateFilter('collection', col)}
-                    className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${
-                      currentCollection === col ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
-                    }`}
+                    className={`w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors text-left ${currentCollection === col ? 'bg-[#1F2520] text-white font-medium' : 'text-[#4A453F] hover:bg-[#FAF7F2]'
+                      }`}
                   >
                     <span>{col}</span>
                   </button>
@@ -301,11 +295,10 @@ const ShopPage = () => {
                   <button
                     key={mat}
                     onClick={() => updateFilter('material', currentMaterial === mat ? 'All' : mat)}
-                    className={`px-3 py-1 rounded-full text-xs transition-all ${
-                      currentMaterial === mat
+                    className={`px-3 py-1 rounded-full text-xs transition-all ${currentMaterial === mat
                         ? 'bg-[#1F2520] text-white font-medium'
                         : 'bg-[#FAF7F2] text-[#4A453F] border border-[#EAE2D9] hover:border-[#1F2520]'
-                    }`}
+                      }`}
                   >
                     {mat}
                   </button>
@@ -393,9 +386,8 @@ const ShopPage = () => {
                 <div className="flex flex-wrap gap-1.5">
                   <button
                     onClick={() => updateFilter('room', 'All')}
-                    className={`px-3 py-1 rounded-full text-xs transition-all ${
-                      currentRoom === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs transition-all ${currentRoom === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                      }`}
                   >
                     All
                   </button>
@@ -403,9 +395,8 @@ const ShopPage = () => {
                     <button
                       key={room}
                       onClick={() => updateFilter('room', room)}
-                      className={`px-3 py-1 rounded-full text-xs transition-all ${
-                        currentRoom === room ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${currentRoom === room ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                        }`}
                     >
                       {room}
                     </button>
@@ -421,9 +412,8 @@ const ShopPage = () => {
                 <div className="flex flex-wrap gap-1.5">
                   <button
                     onClick={() => updateFilter('category', 'All')}
-                    className={`px-3 py-1 rounded-full text-xs transition-all ${
-                      currentCategory === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs transition-all ${currentCategory === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                      }`}
                   >
                     All
                   </button>
@@ -431,9 +421,8 @@ const ShopPage = () => {
                     <button
                       key={cat}
                       onClick={() => updateFilter('category', cat)}
-                      className={`px-3 py-1 rounded-full text-xs transition-all ${
-                        currentCategory === cat ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${currentCategory === cat ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                        }`}
                     >
                       {cat}
                     </button>
@@ -449,9 +438,8 @@ const ShopPage = () => {
                 <div className="flex flex-wrap gap-1.5">
                   <button
                     onClick={() => updateFilter('collection', 'All')}
-                    className={`px-3 py-1 rounded-full text-xs transition-all ${
-                      currentCollection === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
-                    }`}
+                    className={`px-3 py-1 rounded-full text-xs transition-all ${currentCollection === 'All' ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                      }`}
                   >
                     All
                   </button>
@@ -459,9 +447,8 @@ const ShopPage = () => {
                     <button
                       key={col}
                       onClick={() => updateFilter('collection', col)}
-                      className={`px-3 py-1 rounded-full text-xs transition-all ${
-                        currentCollection === col ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${currentCollection === col ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                        }`}
                     >
                       {col}
                     </button>
@@ -479,9 +466,8 @@ const ShopPage = () => {
                     <button
                       key={mat}
                       onClick={() => updateFilter('material', currentMaterial === mat ? 'All' : mat)}
-                      className={`px-3 py-1 rounded-full text-xs transition-all ${
-                        currentMaterial === mat ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs transition-all ${currentMaterial === mat ? 'bg-[#1F2520] text-white font-medium' : 'bg-white text-[#4A453F] border border-[#EAE2D9]'
+                        }`}
                     >
                       {mat}
                     </button>
