@@ -26,7 +26,7 @@ const rooms = [
   {
     name: 'Kitchen',
     slug: 'Kitchen',
-    image: '/images/rooms/kitchen.png',
+    image: '/images/rooms/Kitchen.jpg',
   },
   {
     name: 'Outdoor',
