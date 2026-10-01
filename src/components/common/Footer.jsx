@@ -30,17 +30,6 @@ const Footer = () => {
           </div>
 
           {/* Centered Navigation Links as shown in the bottom bar of the reference image */}
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs font-medium text-[#4A453F]">
-            <Link to="/shop" className="hover:text-[#1F2520] transition-colors">Shop</Link>
-            <span className="text-[#D5C9BD] hidden sm:inline">|</span>
-            <Link to="/collections" className="hover:text-[#1F2520] transition-colors">Collections</Link>
-            <span className="text-[#D5C9BD] hidden sm:inline">|</span>
-            <Link to="/about" className="hover:text-[#1F2520] transition-colors">About</Link>
-            <span className="text-[#D5C9BD] hidden sm:inline">|</span>
-            <Link to="/about#sustainability" className="hover:text-[#1F2520] transition-colors">Sustainability</Link>
-            <span className="text-[#D5C9BD] hidden sm:inline">|</span>
-            <Link to="/about" className="hover:text-[#1F2520] transition-colors">Support</Link>
-          </div>
 
           {/* Social Icons & Statement from the reference */}
           <div className="flex items-center gap-4">
@@ -91,17 +80,35 @@ const Footer = () => {
 
         {/* Bottom Editorial Tagline & Copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8C8379]">
+
           <p className="font-serif italic text-sm text-[#4A453F]">
             "Designing a kinder, more beautiful world — Together."
           </p>
-          <div className="flex flex-wrap items-center gap-6">
-            <span>© {new Date().getFullYear()} Ansari Furniture. All rights reserved.</span>
-            <Link to="/privacy" className="hover:text-[#1F2520] transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-[#1F2520] transition-colors">Terms of Service</Link>
-            <Link to="/admin/subscribers" className="hover:text-[#1F2520] transition-colors">Admin Portal</Link>
+
+          <div className="flex flex-wrap items-center justify-center gap-5">
+
+            <span>
+              © {new Date().getFullYear()} Ansari Furniture. All rights reserved.
+            </span>
+
+
+            {/* Designed & Developed Credit */}
+            <span className="hidden sm:inline text-[#D5C9BD]">|</span>
+
+            <span>
+              Designed & Developed by{" "}
+              <a
+                href="https://promptlogix.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-[#4A453F] hover:text-[#1F2520] underline underline-offset-4 decoration-[#CFC4B8] hover:decoration-[#1F2520] transition-all"
+              >
+                PromptLogix
+              </a>
+            </span>
+
           </div>
         </div>
-
       </div>
     </footer>
   );

@@ -45,9 +45,9 @@ const CartPage = () => {
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
+
         <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-[#1F2520] mb-8">
-          Your Shopping Bag ({cartItems.reduce((acc, i) => acc + i.quantity, 0)})
+          Your Shopping Cart ({cartItems.reduce((acc, i) => acc + i.quantity, 0)})
         </h1>
 
         {cartItems.length === 0 ? (
@@ -68,7 +68,7 @@ const CartPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* Items Table (col-span-8) */}
             <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE2D9] divide-y divide-[#EAE2D9]">
               {cartItems.map((item) => (

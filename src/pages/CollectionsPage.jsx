@@ -10,7 +10,6 @@ const collections = [
     tagline: 'Handcrafted Seasoned Teakwood Dining Suites & Pedestal Tables',
     description: 'Mastercrafted oval and rectangular dining suites carved from seasoned solid Burma and Nilambur teakwood. Paired with 12mm crystal beveled glass tops and ergonomic high-back chairs.',
     heroImage: '/images/showroom/teak_oval_dining.jpg',
-    pieces: '18 Showroom Ensembles',
     accent: 'bg-[#F5EFEB]',
     materials: ['Seasoned Burma Teak', '12mm Beveled Glass', 'Cognac Leatherette', 'Neem Anti-Termite'],
     products: [
@@ -47,7 +46,7 @@ const collections = [
     tagline: 'Iconic Circular Ring Motifs & Artisan Baluster Carvings',
     description: 'A celebration of authentic Indian and Kerala heritage joinery. Features hand-carved circular ring motifs along broad armrests, contoured lumbar posture curves, and lustrous honey gloss finish.',
     heroImage: '/images/showroom/circular_motif_bench.jpg',
-    pieces: '14 Heritage Designs',
+
     accent: 'bg-[#F2ECE3]',
     materials: ['100% Solid Indian Teak', 'Hand-Turned Balusters', 'Ring Carvings', 'Linen Blend Cushion'],
     products: [
@@ -84,7 +83,7 @@ const collections = [
     tagline: 'Architectural Geometric Joinery with Polished Tempered Glass',
     description: 'Crisp interlocking X-trestle timber joinery, crystal-clear tempered safety glass, and ergonomic vertical-slatted high-back seating designed for luminous, contemporary homes in Kollam and Thiruvananthapuram.',
     heroImage: '/images/showroom/cross_leg_dining.jpg',
-    pieces: '16 Contemporary Suites',
+
     accent: 'bg-[#EFEAE2]',
     materials: ['Kiln-Dried Solid Teak', 'Crisscross X-Trestle', '10mm Clear Glass', 'Nylon Leveler Glides'],
     products: [
@@ -113,7 +112,7 @@ const collections = [
     tagline: 'Curved Steam-Bent Teakwood Frames & Royal Wine Chenille',
     description: 'Grand 5-seater showroom ensembles comprising a 3-seater curved slatted sofa, two matching single armchairs, and an oval slatted coffee table with glass top. Finished in rich honey teak with premium deep wine cushions.',
     heroImage: '/images/showroom/slatted_sofa_set.jpg',
-    pieces: '15 Curated Suites',
+
     accent: 'bg-[#F5EFEB]',
     materials: ['Steam-Bent Teak Frame', 'Royal Wine Chenille', '40D Foam', 'Oval Glass Table Included'],
     products: [
@@ -142,7 +141,7 @@ const collections = [
     tagline: '100% Solid Hardwood King Beds & Lifetime Wardrobes',
     description: 'Zero MDF. Zero particle board. Massive seasoned teakwood king bed frames, lockable 4-door timber wardrobes, and artisan storage handcrafted to withstand generations of Kerala weather.',
     heroImage: '/images/showroom/hero_showroom.jpg',
-    pieces: '20 Heirloom Designs',
+
     accent: 'bg-[#F0EAE1]',
     materials: ['100% Solid Seasoned Teak', 'Zero Creak Joinery', 'Brass Locks & Hinges', 'Lifetime Guarantee'],
     products: [
@@ -170,7 +169,7 @@ const CollectionsPage = () => {
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="flex items-center justify-center gap-2 mb-2.5">
@@ -208,7 +207,7 @@ const CollectionsPage = () => {
             >
               {/* Collection Header Banner */}
               <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-8 ${idx % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
-                
+
                 {/* Content Left / Right */}
                 <div className={`lg:col-span-6 space-y-4 ${idx % 2 === 1 ? 'lg:order-2' : ''}`}>
                   <div className="flex items-center gap-2">

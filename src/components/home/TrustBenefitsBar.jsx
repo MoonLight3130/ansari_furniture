@@ -6,7 +6,7 @@ const TrustBenefitsBar = () => {
   const benefits = [
     {
       icon: Truck,
-      title: 'Free Delivery',
+      title: 'Delivery',
       subtitle: 'Across India',
     },
     {
@@ -30,7 +30,7 @@ const TrustBenefitsBar = () => {
     <section className="bg-[#F4EFEB] border-b border-[#EAE2D9] py-5">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-          
+
           {/* Left 4 Benefits */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 w-full lg:w-auto">
             {benefits.map((b, idx) => {

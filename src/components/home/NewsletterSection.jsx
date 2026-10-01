@@ -40,7 +40,7 @@ const NewsletterSection = () => {
     <section className="py-16 lg:py-20 bg-[#FAF7F2]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="relative bg-[#F3EDE4] rounded-3xl p-8 sm:p-14 lg:p-16 border border-[#EAE2D9] overflow-hidden">
-          
+
           {/* Decorative subtle botanical leaves */}
           <div className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full bg-[#EAE2D9]/40 flex items-center justify-center text-[#4A584C]/15 pointer-events-none">
             <Leaf className="w-36 h-36 rotate-45" />
@@ -63,7 +63,7 @@ const NewsletterSection = () => {
               <div className="flex items-center gap-3 p-4 bg-white/80 rounded-2xl border border-[#D5C9BD] text-[#2A352C]">
                 <CheckCircle2 className="w-5 h-5 text-[#354238]" />
                 <span className="text-xs font-semibold">
-                  Thank you for subscribing. Use code <strong>WELCOME10</strong> at checkout for 10% off!
+                  Thank you for subscribing.
                 </span>
               </div>
             ) : (

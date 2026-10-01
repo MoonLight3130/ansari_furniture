@@ -32,7 +32,7 @@ const VideoModal = ({ isOpen, onClose }) => {
           {/* Embedded aesthetic craftsmanship video presentation */}
           <iframe
             className="w-full h-full"
-            src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&loop=1&playlist=dQw4w9WgXcQ"
+            src="/videos/anzari_video.mp4"
             title="Ansari Furniture Craftsmanship Story"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
