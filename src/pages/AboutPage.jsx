@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, ShieldCheck, Leaf, Award, HeartHandshake, MessageCircle, Navigation } from 'lucide-react';
+import { usePageSeo } from '../utils/seo';
 
 const AboutPage = () => {
+  usePageSeo('About Us & Showrooms', 'Learn about Ansari Furniture — 15+ years of handcrafted solid teak furniture with showrooms in Kollam and Thiruvananthapuram.');
   const branches = [
     {
       city: 'Kollam Showroom',

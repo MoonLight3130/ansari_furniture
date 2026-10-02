@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useToast } from './ToastContext';
 
 const WishlistContext = createContext();
@@ -22,13 +22,13 @@ export const WishlistProvider = ({ children }) => {
     }
   }, [wishlist]);
 
-  const isInWishlist = (productId) => {
+  const isInWishlist = useCallback((productId) => {
     return wishlist.some((item) => (item._id || item) === productId);
-  };
+  }, [wishlist]);
 
-  const toggleWishlist = (product) => {
+  const toggleWishlist = useCallback((product) => {
     const pId = product._id || product;
-    const exists = isInWishlist(pId);
+    const exists = wishlist.some((item) => (item._id || item) === pId);
 
     if (exists) {
       setWishlist((prev) => prev.filter((item) => (item._id || item) !== pId));
@@ -37,17 +37,17 @@ export const WishlistProvider = ({ children }) => {
       setWishlist((prev) => [...prev, product]);
       addToast(`Saved "${product.name || 'item'}" to your wishlist.`);
     }
-  };
+  }, [wishlist, addToast]);
+
+  const value = useMemo(() => ({
+    wishlist,
+    toggleWishlist,
+    isInWishlist,
+    wishlistCount: wishlist.length,
+  }), [wishlist, toggleWishlist, isInWishlist]);
 
   return (
-    <WishlistContext.Provider
-      value={{
-        wishlist,
-        toggleWishlist,
-        isInWishlist,
-        wishlistCount: wishlist.length,
-      }}
-    >
+    <WishlistContext.Provider value={value}>
       {children}
     </WishlistContext.Provider>
   );

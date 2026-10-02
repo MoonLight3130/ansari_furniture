@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Eye, ShoppingBag, Star, MessageCircle } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import WhatsAppEnquiryModal from './WhatsAppEnquiryModal';
 
-const ProductCard = ({ product, onQuickView }) => {
+const ProductCard = memo(({ product, onQuickView }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isWhatsAppOpen, setIsWhatsAppOpen] = useState(false);
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -17,7 +17,7 @@ const ProductCard = ({ product, onQuickView }) => {
   const mainImage = product.images?.[0] || '/images/showroom/teak_oval_dining.jpg';
   const secondaryImage = product.secondaryImage || product.images?.[1] || mainImage;
 
-  // Format short material description as requested in prompt (e.g. "Solid Teak Wood · 6 Seater")
+  // Format short material description
   const materialSubtitle =
     product.shortDescription ||
     (product.material ? `${product.material}` : 'Solid Wood Craftsmanship');
@@ -65,6 +65,7 @@ const ProductCard = ({ product, onQuickView }) => {
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             loading="lazy"
+            decoding="async"
           />
 
           {/* Quick Action Overlay Buttons */}
@@ -169,13 +170,17 @@ const ProductCard = ({ product, onQuickView }) => {
         </div>
       </div>
 
-      <WhatsAppEnquiryModal
-        isOpen={isWhatsAppOpen}
-        onClose={() => setIsWhatsAppOpen(false)}
-        product={product}
-      />
+      {isWhatsAppOpen && (
+        <WhatsAppEnquiryModal
+          isOpen={isWhatsAppOpen}
+          onClose={() => setIsWhatsAppOpen(false)}
+          product={product}
+        />
+      )}
     </>
   );
-};
+});
+
+ProductCard.displayName = 'ProductCard';
 
 export default ProductCard;

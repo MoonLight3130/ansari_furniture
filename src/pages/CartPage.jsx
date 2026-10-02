@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, ShieldCheck, Tag, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Trash2, Plus, Minus, ShoppingBag, ShieldCheck, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { usePageSeo } from '../utils/seo';
 
 const CartPage = () => {
   const {
@@ -17,7 +18,8 @@ const CartPage = () => {
   } = useCart();
 
   const [inputCode, setInputCode] = useState('');
-  const navigate = useNavigate();
+
+  usePageSeo('Shopping Bag & Enquiry', 'Review your selected luxury furniture pieces and enquire directly on WhatsApp with our showroom craftsmen.');
 
   const handleWhatsAppCartEnquiry = () => {
     const showroomNumber = '919496271949';

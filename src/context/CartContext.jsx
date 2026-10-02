@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useToast } from './ToastContext';
 
 const CartContext = createContext();
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
     }
   }, [cartItems]);
 
-  const addToCart = (product, quantity = 1, color = null) => {
+  const addToCart = useCallback((product, quantity = 1, color = null) => {
     const selectedColor = color || (product.colors && product.colors[0]?.name) || 'Standard';
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
@@ -54,9 +54,16 @@ export const CartProvider = ({ children }) => {
 
     addToast(`"${product.name}" added to your bag.`);
     setIsCartOpen(true);
-  };
+  }, [addToast]);
 
-  const updateQuantity = (productId, color, newQuantity) => {
+  const removeFromCart = useCallback((productId, color) => {
+    setCartItems((prev) =>
+      prev.filter((item) => !(item.productId === productId && item.color === color))
+    );
+    addToast('Item removed from your bag.', 'info');
+  }, [addToast]);
+
+  const updateQuantity = useCallback((productId, color, newQuantity) => {
     if (newQuantity <= 0) {
       removeFromCart(productId, color);
       return;
@@ -68,64 +75,83 @@ export const CartProvider = ({ children }) => {
           : item
       )
     );
-  };
+  }, [removeFromCart]);
 
-  const removeFromCart = (productId, color) => {
-    setCartItems((prev) =>
-      prev.filter((item) => !(item.productId === productId && item.color === color))
-    );
-    addToast('Item removed from your bag.', 'info');
-  };
-
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCartItems([]);
     setDiscountAmount(0);
     setPromoCode('');
-  };
+  }, []);
 
-  const applyPromo = (code) => {
-    if (code.toUpperCase() === 'WELCOME10') {
+  const subtotal = useMemo(() => {
+    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }, [cartItems]);
+
+  const totalItems = useMemo(() => {
+    return cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  }, [cartItems]);
+
+  const shippingFee = useMemo(() => {
+    return subtotal >= 20000 || subtotal === 0 ? 0 : 2500;
+  }, [subtotal]);
+
+  const total = useMemo(() => {
+    return Math.max(0, subtotal - discountAmount + shippingFee);
+  }, [subtotal, discountAmount, shippingFee]);
+
+  const applyPromo = useCallback((code) => {
+    const upperCode = code.toUpperCase();
+    if (upperCode === 'WELCOME10') {
       const discount = Math.round(subtotal * 0.1);
       setDiscountAmount(discount);
-      setPromoCode(code.toUpperCase());
+      setPromoCode(upperCode);
       addToast('Promo code WELCOME10 applied! (10% off)');
       return { success: true, discount };
-    } else if (code.toUpperCase() === 'LUXURY2026') {
+    } else if (upperCode === 'LUXURY2026') {
       const discount = 5000;
       setDiscountAmount(discount);
-      setPromoCode(code.toUpperCase());
+      setPromoCode(upperCode);
       addToast('Promo code LUXURY2026 applied! (₹5,000 off)');
       return { success: true, discount };
     } else {
       addToast('Invalid promo code. Try WELCOME10', 'error');
       return { success: false };
     }
-  };
+  }, [subtotal, addToast]);
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const shippingFee = subtotal >= 20000 || subtotal === 0 ? 0 : 2500;
-  const total = Math.max(0, subtotal - discountAmount + shippingFee);
+  const value = useMemo(() => ({
+    cartItems,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+    isCartOpen,
+    setIsCartOpen,
+    subtotal,
+    totalItems,
+    shippingFee,
+    discountAmount,
+    promoCode,
+    applyPromo,
+    total,
+  }), [
+    cartItems,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+    isCartOpen,
+    subtotal,
+    totalItems,
+    shippingFee,
+    discountAmount,
+    promoCode,
+    applyPromo,
+    total,
+  ]);
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addToCart,
-        updateQuantity,
-        removeFromCart,
-        clearCart,
-        isCartOpen,
-        setIsCartOpen,
-        subtotal,
-        totalItems,
-        shippingFee,
-        discountAmount,
-        promoCode,
-        applyPromo,
-        total,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

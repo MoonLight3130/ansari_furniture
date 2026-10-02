@@ -1,16 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Compass, Sparkles, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Compass } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const HeroSection = ({ onQuickViewProduct }) => {
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
+const HeroSection = () => {
   return (
     <section className="relative overflow-hidden bg-[#F5F0E8] border-b border-[#DFD5C6]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-14">
@@ -92,14 +84,12 @@ const HeroSection = ({ onQuickViewProduct }) => {
                 alt="Ansari Furniture Luxury Wooden Showroom"
                 className="w-full h-full object-cover"
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
 
               {/* Subtle Warm Vignette Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
-
-
-              {/* Craftsmanship Badge on Top Right */}
-
             </div>
 
           </div>

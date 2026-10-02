@@ -402,22 +402,39 @@ const CollectionsGallerySection = ({ onQuickView }) => {
   }, [selectedCollectionId]);
 
   const displayedProducts = useMemo(() => {
+    const enrichedDefaultProducts = defaultProducts.map((def) => {
+      const live = liveProducts.find(
+        (p) =>
+          p.slug === def.slug ||
+          p._id === def._id ||
+          p.name?.trim().toLowerCase() === def.name?.trim().toLowerCase()
+      );
+      if (live) {
+        return {
+          ...def,
+          ...live,
+          price: live.price,
+          name: live.name,
+          images: live.images?.length ? live.images : def.images,
+        };
+      }
+      return def;
+    });
+
     if (selectedCollectionId === 'all') {
-      // Pick 1-2 hero pieces from each collection
-      // for a balanced cross-suite gallery
-      return liveProducts.slice(0, 8);
+      return liveProducts.length > 0 ? liveProducts.slice(0, 8) : enrichedDefaultProducts.slice(0, 8);
     }
 
     const filtered = liveProducts.filter(
       (p) =>
-        p.collectionName === activeCollection.name
+        p.collectionName?.toLowerCase() === activeCollection.name?.toLowerCase()
     );
 
     return filtered.length > 0
       ? filtered
-      : defaultProducts.filter(
+      : enrichedDefaultProducts.filter(
           (p) =>
-            p.collectionName === activeCollection.name
+            p.collectionName?.toLowerCase() === activeCollection.name?.toLowerCase()
         );
   }, [
     selectedCollectionId,

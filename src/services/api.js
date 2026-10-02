@@ -10,251 +10,279 @@ const normalize = (item) => {
   };
 };
 
+// In-flight deduplication for simultaneous identical queries (e.g. React StrictMode mounts)
+const inFlightRequests = new Map();
+
+export const clearApiCache = () => {
+  // Retained for compatibility
+};
+
 /**
- * Supabase-backed API service.
- * Implements standard REST methods (get, post, put, delete) matching existing frontend calls,
- * replacing the Express backend with Supabase Data API and PostgreSQL RPC.
+ * Supabase-backed API service with real-time freshness and in-flight deduplication.
  */
 const api = {
-  get: async (url, config = {}) => {
-    try {
-      const parsedUrl = new URL(url, 'http://localhost');
-      const pathname = parsedUrl.pathname.replace(/^\/api/, '');
-      const searchParams = parsedUrl.searchParams;
+  get: async (url, _config = {}) => {
+    const parsedUrl = new URL(url, 'http://localhost');
+    const pathname = parsedUrl.pathname.replace(/^\/api/, '');
+    const searchParams = parsedUrl.searchParams;
+    const requestKey = `${pathname}?${searchParams.toString()}`;
 
-      // 1. /products/bestsellers
-      if (pathname === '/products/bestsellers') {
-        const { data, error } = await supabase
-          .from('Product')
-          .select('*')
-          .eq('bestseller', true)
-          .order('rating', { ascending: false })
-          .limit(8);
-        if (error) throw error;
-        return { data: normalize(data || []) };
-      }
+    // Deduplicate identical in-flight requests
+    if (inFlightRequests.has(requestKey)) {
+      return inFlightRequests.get(requestKey);
+    }
 
-      // 2. /products/featured
-      if (pathname === '/products/featured') {
-        const { data, error } = await supabase
-          .from('Product')
-          .select('*')
-          .eq('featured', true)
-          .order('createdAt', { ascending: false })
-          .limit(8);
-        if (error) throw error;
-        return { data: normalize(data || []) };
-      }
+    const fetchPromise = (async () => {
+      try {
+        let resultData = null;
 
-      // 3. /products/meta/filters
-      if (pathname === '/products/meta/filters') {
-        const { data, error } = await supabase.rpc('get_filter_meta');
-        if (error) throw error;
-        return { data };
-      }
-
-      // 4. /products/:id/related
-      if (pathname.match(/^\/products\/([^/]+)\/related$/)) {
-        const id = pathname.match(/^\/products\/([^/]+)\/related$/)[1];
-        // Fetch current product to find category/room
-        const { data: current } = await supabase
-          .from('Product')
-          .select('id, category, room')
-          .or(`id.eq.${id},slug.eq.${id.toLowerCase()}`)
-          .single();
-
-        if (!current) {
-          const { data: fallback } = await supabase.from('Product').select('*').limit(4);
-          return { data: normalize(fallback || []) };
+        // 1. /products/bestsellers
+        if (pathname === '/products/bestsellers') {
+          const { data, error } = await supabase
+            .from('Product')
+            .select('*')
+            .eq('bestseller', true)
+            .order('rating', { ascending: false })
+            .limit(8);
+          if (error) throw error;
+          resultData = normalize(data || []);
         }
 
-        const { data: related, error } = await supabase
-          .from('Product')
-          .select('*')
-          .neq('id', current.id)
-          .or(`category.eq.${current.category},room.eq.${current.room}`)
-          .limit(4);
-
-        if (error) throw error;
-        return { data: normalize(related || []) };
-      }
-
-      // 5. /reviews/product/:productId
-      if (pathname.match(/^\/reviews\/product\/([^/]+)$/)) {
-        const productId = pathname.match(/^\/reviews\/product\/([^/]+)$/)[1];
-        const { data, error } = await supabase
-          .from('Review')
-          .select('*')
-          .eq('productId', productId)
-          .order('createdAt', { ascending: false });
-        if (error) throw error;
-        return { data: normalize(data || []) };
-      }
-
-      // 6. /products/:slug or :id
-      if (pathname.startsWith('/products/') && !pathname.includes('?')) {
-        const identifier = pathname.replace('/products/', '');
-        const { data: product, error } = await supabase
-          .from('Product')
-          .select('*, reviews:Review(*)')
-          .or(`id.eq.${identifier},slug.eq.${identifier.toLowerCase()}`)
-          .single();
-
-        if (error || !product) {
-          throw new Error('Product not found');
-        }
-        return { data: normalize(product) };
-      }
-
-      // 7. /products (search, filtering, pagination, sorting)
-      if (pathname === '/products' || pathname === '/products/') {
-        const search = searchParams.get('search') || '';
-        const category = searchParams.get('category');
-        const room = searchParams.get('room');
-        const collectionName = searchParams.get('collection') || searchParams.get('collectionName');
-        const material = searchParams.get('material');
-        const minPrice = searchParams.get('minPrice');
-        const maxPrice = searchParams.get('maxPrice');
-        const rating = searchParams.get('rating');
-        const sort = searchParams.get('sort') || 'featured';
-        const page = Number(searchParams.get('page')) || 1;
-        const limit = Number(searchParams.get('limit')) || 12;
-
-        let query = supabase.from('Product').select('*', { count: 'exact' });
-
-        if (search) {
-          query = query.or(
-            `name.ilike.%${search}%,description.ilike.%${search}%,material.ilike.%${search}%,category.ilike.%${search}%,room.ilike.%${search}%`
-          );
+        // 2. /products/featured
+        else if (pathname === '/products/featured') {
+          const { data, error } = await supabase
+            .from('Product')
+            .select('*')
+            .eq('featured', true)
+            .order('createdAt', { ascending: false })
+            .limit(8);
+          if (error) throw error;
+          resultData = normalize(data || []);
         }
 
-        if (category && category !== 'All') {
-          query = query.ilike('category', category);
+        // 3. /products/meta/filters
+        else if (pathname === '/products/meta/filters') {
+          const { data, error } = await supabase.rpc('get_filter_meta');
+          if (error) throw error;
+          resultData = data;
         }
 
-        if (room && room !== 'All') {
-          query = query.ilike('room', room);
+        // 4. /products/:id/related
+        else if (pathname.match(/^\/products\/([^/]+)\/related$/)) {
+          const id = pathname.match(/^\/products\/([^/]+)\/related$/)[1];
+          const { data: current } = await supabase
+            .from('Product')
+            .select('id, category, room')
+            .or(`id.eq.${id},slug.eq.${id.toLowerCase()}`)
+            .single();
+
+          if (!current) {
+            const { data: fallback } = await supabase.from('Product').select('*').limit(4);
+            resultData = normalize(fallback || []);
+          } else {
+            const { data: related, error } = await supabase
+              .from('Product')
+              .select('*')
+              .neq('id', current.id)
+              .or(`category.eq.${current.category},room.eq.${current.room}`)
+              .limit(4);
+
+            if (error) throw error;
+            resultData = normalize(related || []);
+          }
         }
 
-        if (collectionName && collectionName !== 'All') {
-          query = query.ilike('collectionName', collectionName);
+        // 5. /reviews/product/:productId
+        else if (pathname.match(/^\/reviews\/product\/([^/]+)$/)) {
+          const productId = pathname.match(/^\/reviews\/product\/([^/]+)$/)[1];
+          const { data, error } = await supabase
+            .from('Review')
+            .select('*')
+            .eq('productId', productId)
+            .order('createdAt', { ascending: false });
+          if (error) throw error;
+          resultData = normalize(data || []);
         }
 
-        if (material && material !== 'All') {
-          query = query.ilike('material', `%${material}%`);
+        // 6. /products/:slug or :id
+        else if (pathname.startsWith('/products/') && !pathname.includes('?')) {
+          const identifier = pathname.replace('/products/', '');
+          const { data: product, error } = await supabase
+            .from('Product')
+            .select('*, reviews:Review(*)')
+            .or(`id.eq.${identifier},slug.eq.${identifier.toLowerCase()}`)
+            .single();
+
+          if (error || !product) {
+            throw new Error('Product not found');
+          }
+          resultData = normalize(product);
         }
 
-        if (minPrice) {
-          query = query.gte('price', Number(minPrice));
-        }
+        // 7. /products (search, filtering, pagination, sorting)
+        else if (pathname === '/products' || pathname === '/products/') {
+          const search = searchParams.get('search') || '';
+          const category = searchParams.get('category');
+          const room = searchParams.get('room');
+          const collectionName = searchParams.get('collection') || searchParams.get('collectionName');
+          const material = searchParams.get('material');
+          const minPrice = searchParams.get('minPrice');
+          const maxPrice = searchParams.get('maxPrice');
+          const rating = searchParams.get('rating');
+          const sort = searchParams.get('sort') || 'featured';
+          const page = Number(searchParams.get('page')) || 1;
+          const limit = Number(searchParams.get('limit')) || 12;
 
-        if (maxPrice) {
-          query = query.lte('price', Number(maxPrice));
-        }
+          let query = supabase.from('Product').select('*', { count: 'exact' });
 
-        if (rating) {
-          query = query.gte('rating', Number(rating));
-        }
+          if (search) {
+            query = query.or(
+              `name.ilike.%${search}%,description.ilike.%${search}%,material.ilike.%${search}%,category.ilike.%${search}%,room.ilike.%${search}%`
+            );
+          }
 
-        // Sorting
-        if (sort === 'bestseller') {
-          query = query.order('bestseller', { ascending: false }).order('rating', { ascending: false });
-        } else if (sort === 'price-low') {
-          query = query.order('price', { ascending: true });
-        } else if (sort === 'price-high') {
-          query = query.order('price', { ascending: false });
-        } else if (sort === 'newest') {
-          query = query.order('createdAt', { ascending: false });
-        } else if (sort === 'rating') {
-          query = query.order('rating', { ascending: false });
-        } else {
-          // featured
-          query = query.order('featured', { ascending: false }).order('createdAt', { ascending: false });
-        }
+          if (category && category !== 'All') {
+            query = query.ilike('category', category);
+          }
 
-        const from = (page - 1) * limit;
-        const to = from + limit - 1;
-        query = query.range(from, to);
+          if (room && room !== 'All') {
+            query = query.ilike('room', room);
+          }
 
-        const { data, count, error } = await query;
-        if (error) throw error;
+          if (collectionName && collectionName !== 'All') {
+            query = query.ilike('collectionName', collectionName);
+          }
 
-        return {
-          data: {
+          if (material && material !== 'All') {
+            query = query.ilike('material', `%${material}%`);
+          }
+
+          if (minPrice) {
+            query = query.gte('price', Number(minPrice));
+          }
+
+          if (maxPrice) {
+            query = query.lte('price', Number(maxPrice));
+          }
+
+          if (rating) {
+            query = query.gte('rating', Number(rating));
+          }
+
+          // Sorting
+          if (sort === 'bestseller') {
+            query = query.order('bestseller', { ascending: false }).order('rating', { ascending: false });
+          } else if (sort === 'price-low') {
+            query = query.order('price', { ascending: true });
+          } else if (sort === 'price-high') {
+            query = query.order('price', { ascending: false });
+          } else if (sort === 'newest') {
+            query = query.order('createdAt', { ascending: false });
+          } else if (sort === 'rating') {
+            query = query.order('rating', { ascending: false });
+          } else {
+            // featured
+            query = query.order('featured', { ascending: false }).order('createdAt', { ascending: false });
+          }
+
+          const from = (page - 1) * limit;
+          const to = from + limit - 1;
+          query = query.range(from, to);
+
+          const { data, count, error } = await query;
+          if (error) throw error;
+
+          resultData = {
             products: normalize(data || []),
             page,
             totalPages: Math.ceil((count || 0) / limit) || 1,
             totalProducts: count || 0,
-          },
-        };
-      }
-
-      // 8. /orders/myorders
-      if (pathname === '/orders/myorders') {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('Not authenticated');
-
-        const { data, error } = await supabase
-          .from('Order')
-          .select('*, items:OrderItem(*)')
-          .eq('userId', user.id)
-          .order('createdAt', { ascending: false });
-
-        if (error) throw error;
-        return { data: normalize(data || []) };
-      }
-
-      // 9. /orders/:id
-      if (pathname.startsWith('/orders/')) {
-        const orderId = pathname.replace('/orders/', '');
-        const { data, error } = await supabase
-          .from('Order')
-          .select('*, items:OrderItem(*)')
-          .eq('id', orderId)
-          .single();
-        if (error) throw error;
-        return { data: normalize(data) };
-      }
-
-      // 10. /admin/subscribers or /newsletter/subscribers
-      if (pathname === '/admin/subscribers' || pathname === '/newsletter/subscribers') {
-        const search = (searchParams.get('search') || '').trim();
-        const status = searchParams.get('status') || '';
-
-        let query = supabase
-          .from('NewsletterSubscriber')
-          .select('id, email, userId, subscribedAt, status, user:User(id, name, email, role, phone)')
-          .order('subscribedAt', { ascending: false });
-
-        if (search) {
-          query = query.ilike('email', `%${search}%`);
+          };
         }
 
-        if (status && status !== 'all') {
-          query = query.eq('status', status);
+        // 8. /orders/myorders
+        else if (pathname === '/orders/myorders') {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) throw new Error('Not authenticated');
+
+          const { data, error } = await supabase
+            .from('Order')
+            .select('*, items:OrderItem(*)')
+            .eq('userId', user.id)
+            .order('createdAt', { ascending: false });
+
+          if (error) throw error;
+          resultData = normalize(data || []);
         }
 
-        const { data, error } = await query;
-        if (error) {
-          console.error('Error fetching subscribers:', error);
-          throw error;
+        // 9. /orders/:id
+        else if (pathname.startsWith('/orders/')) {
+          const orderId = pathname.replace('/orders/', '');
+          const { data, error } = await supabase
+            .from('Order')
+            .select('*, items:OrderItem(*)')
+            .eq('id', orderId)
+            .single();
+          if (error) throw error;
+          resultData = normalize(data);
         }
 
-        return { data: normalize(data || []) };
+        // 10. /admin/subscribers or /newsletter/subscribers
+        else if (pathname === '/admin/subscribers' || pathname === '/newsletter/subscribers') {
+          const search = (searchParams.get('search') || '').trim();
+          const status = searchParams.get('status') || '';
+
+          let query = supabase
+            .from('NewsletterSubscriber')
+            .select('id, email, userId, subscribedAt, status, user:User(id, name, email, role, phone)')
+            .order('subscribedAt', { ascending: false });
+
+          if (search) {
+            query = query.ilike('email', `%${search}%`);
+          }
+
+          if (status && status !== 'all') {
+            query = query.eq('status', status);
+          }
+
+          const { data, error } = await query;
+          if (error) {
+            console.error('Error fetching subscribers:', error);
+            throw error;
+          }
+
+          resultData = normalize(data || []);
+        } else {
+          throw new Error(`Unhandled GET path: ${pathname}`);
+        }
+
+        return { data: resultData };
+      } catch (err) {
+        console.error('API GET Error:', err);
+        throw err;
+      } finally {
+        inFlightRequests.delete(requestKey);
       }
+    })();
 
-      // Fallback
-      throw new Error(`Unhandled GET path: ${pathname}`);
-    } catch (err) {
-      console.error('API GET Error:', err);
-      throw err;
-    }
+    inFlightRequests.set(requestKey, fetchPromise);
+    return fetchPromise;
   },
 
   post: async (url, body = {}) => {
     try {
       const parsedUrl = new URL(url, 'http://localhost');
       const pathname = parsedUrl.pathname.replace(/^\/api/, '');
+
+      // Invalidate relevant caches on mutations
+      if (pathname.includes('/orders')) {
+        clearApiCache('/orders');
+      } else if (pathname.includes('/reviews')) {
+        clearApiCache('/reviews');
+        clearApiCache('/products');
+      } else if (pathname.includes('/newsletter')) {
+        clearApiCache('/admin/subscribers');
+      }
 
       // 1. /orders -> Atomic order placement via PostgreSQL RPC
       if (pathname === '/orders' || pathname === '/orders/') {
@@ -322,7 +350,6 @@ const api = {
           throw err;
         }
 
-        // Check if visitor is authenticated
         let userId = null;
         try {
           const { data: { user } } = await supabase.auth.getUser();
@@ -330,7 +357,6 @@ const api = {
             userId = user.id;
           }
         } catch {
-          // If auth check fails, gracefully treat as guest (userId remains null)
           userId = null;
         }
 
@@ -346,7 +372,6 @@ const api = {
           .single();
 
         if (error) {
-          // Duplicate email (PostgreSQL error code 23505)
           if (error.code === '23505') {
             const duplicateError = new Error('This email address is already subscribed to our journal.');
             duplicateError.code = '23505';

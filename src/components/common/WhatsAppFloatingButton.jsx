@@ -90,10 +90,12 @@ const WhatsAppFloatingButton = ({ isCartOpen = false }) => {
         </svg>
       </motion.button>
 
-      <WhatsAppEnquiryModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
+      {isOpen && (
+        <WhatsAppEnquiryModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
     </>
   );
 };

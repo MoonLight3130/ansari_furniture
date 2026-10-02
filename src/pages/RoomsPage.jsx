@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { usePageSeo } from '../utils/seo';
 
 const roomList = [
   {
@@ -48,6 +49,7 @@ const roomList = [
 ];
 
 const RoomsPage = () => {
+  usePageSeo('Shop by Room', 'Find the perfect handcrafted furniture for every room — living room, dining, bedroom, home office, outdoor, and kitchen.');
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">

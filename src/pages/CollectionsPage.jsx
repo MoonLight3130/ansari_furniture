@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, CheckCircle2, MessageCircle, Eye } from 'lucide-react';
+import { ArrowRight, MessageCircle } from 'lucide-react';
+import { usePageSeo } from '../utils/seo';
+import api from '../services/api';
 
 const collections = [
   {
@@ -166,6 +168,60 @@ const collections = [
 ];
 
 const CollectionsPage = () => {
+  usePageSeo(
+    'Curated Collections',
+    'Explore our flagship teak dining sets, curved slatted living ensembles, and traditional hand-carved heritage furniture.'
+  );
+
+  const [dbProducts, setDbProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchLiveProducts = async () => {
+      try {
+        const res = await api.get('/products?limit=50');
+        if (res.data?.products) {
+          setDbProducts(res.data.products);
+        }
+      } catch (err) {
+        console.error('Failed to load products for collections:', err);
+      }
+    };
+
+    fetchLiveProducts();
+  }, []);
+
+  const mergedCollections = useMemo(() => {
+    return collections.map((col) => {
+      const updatedProducts = col.products.map((prod) => {
+        const live = dbProducts.find(
+          (p) =>
+            p.slug === prod.slug ||
+            p._id === prod.slug ||
+            p.name?.trim().toLowerCase() === prod.name?.trim().toLowerCase()
+        );
+
+        if (live) {
+          return {
+            ...prod,
+            name: live.name,
+            price: live.price,
+            comparePrice: live.compareAtPrice || prod.comparePrice,
+            image: live.images?.[0] || prod.image,
+            spec: live.shortDescription || live.material || prod.spec,
+            slug: live.slug || prod.slug,
+          };
+        }
+
+        return prod;
+      });
+
+      return {
+        ...col,
+        products: updatedProducts,
+      };
+    });
+  }, [dbProducts]);
+
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -200,7 +256,7 @@ const CollectionsPage = () => {
 
         {/* Editorial Collections List */}
         <div className="space-y-16">
-          {collections.map((col, idx) => (
+          {mergedCollections.map((col, idx) => (
             <div
               key={col.id}
               className={`rounded-3xl border border-[#EAE2D9] overflow-hidden ${col.accent} p-6 sm:p-10 lg:p-12 transition-all hover:shadow-xl`}

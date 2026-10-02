@@ -10,8 +10,13 @@ import NewsletterSection from '../components/home/NewsletterSection';
 import QuickViewModal from '../components/common/QuickViewModal';
 import VideoModal from '../components/common/VideoModal';
 import api from '../services/api';
+import { usePageSeo } from '../utils/seo';
 
 const HomePage = () => {
+  usePageSeo(
+    'Where Comfort Meets Timeless Design',
+    'Thoughtfully crafted furniture for modern homes. Blending natural materials, elegant design, and lasting quality — because every space tells a story.'
+  );
   const [bestsellers, setBestsellers] = useState([]);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);

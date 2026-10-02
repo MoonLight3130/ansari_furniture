@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
-  Users, 
   Search, 
   Mail, 
   Calendar, 
@@ -10,13 +9,11 @@ import {
   RefreshCw, 
   Download, 
   CheckCircle2, 
-  Filter,
-  Sparkles,
-  ArrowUpDown,
-  ExternalLink
+  ArrowUpDown
 } from 'lucide-react';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { usePageSeo } from '../utils/seo';
 
 const AdminSubscribersPage = () => {
   const [subscribers, setSubscribers] = useState([]);
@@ -26,10 +23,12 @@ const AdminSubscribersPage = () => {
   const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'oldest' | 'email'
   const { addToast } = useToast();
 
-  const fetchSubscribers = async () => {
+  usePageSeo('Newsletter Subscribers Admin', 'View and export newsletter subscribers.');
+
+  const fetchSubscribers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get('/admin/subscribers');
+      const res = await api.get('/admin/subscribers', { skipCache: true });
       setSubscribers(res.data || []);
     } catch (err) {
       console.error('Failed to load subscribers:', err);
@@ -37,11 +36,11 @@ const AdminSubscribersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [addToast]);
 
   useEffect(() => {
     fetchSubscribers();
-  }, []);
+  }, [fetchSubscribers]);
 
   // Filter & Search Logic
   const filteredSubscribers = useMemo(() => {

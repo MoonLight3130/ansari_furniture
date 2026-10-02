@@ -181,7 +181,7 @@ const CartDrawer = () => {
               )}
             </div>
 
-            {/* Footer Summary & Checkout */}
+            {/* Footer Summary & WhatsApp Enquiry */}
             {cartItems.length > 0 && (
               <div className="p-6 bg-white border-t border-[#EAE2D9] space-y-4">
                 {/* Promo Code Input */}

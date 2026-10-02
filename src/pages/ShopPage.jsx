@@ -9,6 +9,7 @@ import {
 import ProductCard from '../components/common/ProductCard';
 import QuickViewModal from '../components/common/QuickViewModal';
 import api from '../services/api';
+import { usePageSeo } from '../utils/seo';
 
 
 // ============================================================
@@ -108,6 +109,11 @@ const ShopPage = () => {
 
   const currentMaxPrice =
     searchParams.get('maxPrice') || '';
+
+  usePageSeo(
+    currentSearch ? `Search: "${currentSearch}"` : currentCategory !== 'All' ? `${currentCategory} Collection` : currentRoom !== 'All' ? `${currentRoom} Furniture` : 'Explore All Furniture',
+    'Browse handcrafted solid teak furniture, suites, and decor tailored for luxury residences and modern living spaces.'
+  );
 
 
   // ==========================================================

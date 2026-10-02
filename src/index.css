@@ -7,6 +7,8 @@
     background-color: #F5F0E8;
     color: #241A14;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    /* Prevent layout shift from font loading */
+    font-display: optional;
   }
 
   h1, h2, h3, h4, .font-serif {
@@ -19,6 +21,21 @@
 
   .font-script {
     font-family: 'Caveat', cursive;
+  }
+
+  /* Smooth focus ring for accessibility */
+  :focus-visible {
+    outline: 2px solid #A66A3A;
+    outline-offset: 2px;
+  }
+
+  /* Image performance: prevent layout shift */
+  img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    /* Smooth loading fade-in */
+    @apply transition-opacity duration-300;
   }
 }
 
@@ -58,4 +75,25 @@
   background-color: rgba(248, 244, 236, 0.92);
   border: 1px solid rgba(223, 213, 198, 0.8);
   box-shadow: 0 10px 25px -5px rgba(36, 26, 20, 0.08);
+}
+
+/* Contain paint for off-screen sections (improves scrolling perf) */
+.content-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}
+
+/* GPU-composited animations only */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* Hide WhatsApp floating button when product detail page is shown */
+.product-detail-active .whatsapp-float {
+  display: none;
 }

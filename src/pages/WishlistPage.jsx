@@ -1,12 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Trash2, ShoppingBag, ArrowRight, Sparkles, MessageCircle } from 'lucide-react';
+import { Heart, Trash2, ShoppingBag, ArrowRight, MessageCircle } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
+import { usePageSeo } from '../utils/seo';
 
 const WishlistPage = () => {
   const { wishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
+
+  usePageSeo('My Wishlist', 'Your saved furniture pieces from Ansari Furniture — ready to revisit and add to cart.');
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16">
